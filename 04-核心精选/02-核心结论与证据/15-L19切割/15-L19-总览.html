@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>L19 · 新模型画线分割链路总览</title>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--line:#d6dde6;--txt:#1c2634;--sub:#69768a;
+--good:#1a8c5c;--warn:#b07616;--bad:#c43e3e;--blue:#306cc4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font:15px/1.7 "Microsoft YaHei","Segoe UI",system-ui,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:28px 24px 64px}
+h1{font-size:30px;margin:0 0 6px}
+h2{font-size:20px;margin:34px 0 12px;padding-left:10px;border-left:4px solid var(--blue)}
+.lead{color:var(--sub);margin:0 0 18px}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 8px}
+.badge{background:var(--card);border:1px solid var(--line);border-radius:8px;
+padding:8px 14px;font-size:14px}
+.badge b{color:var(--good)}
+.badge.warn b{color:var(--warn)}
+.badge.blue b{color:var(--blue)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:10px;
+padding:10px;text-align:center}
+figure img{width:100%;border-radius:6px;display:block}
+figcaption{color:var(--sub);font-size:13px;margin-top:8px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.panel img{width:100%;border-radius:8px;display:block}
+table{width:100%;border-collapse:collapse;background:var(--card);
+border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th,td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#eef2f7;color:var(--sub);font-weight:600}
+td.num{text-align:right;white-space:nowrap;color:var(--sub)}
+code{background:#eef2f7;padding:2px 6px;border-radius:4px;font-size:13px}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.kv div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kv span{display:block;color:var(--sub);font-size:13px}
+.kv b{font-size:20px}
+.note{background:#fff8e8;border:1px solid #efd9a8;border-radius:10px;
+padding:14px 18px;color:#7a5710;font-size:14px}
+a{color:var(--blue)}
+</style></head><body><div class="wrap">
+<h1>L19 · 新模型画线分割链路</h1>
+<p class="lead">从「单一水密壳」到「两件可装配封闭实体」的实测闭环 · 2026-11-09 · 全部本地产物</p>
+<div class="badges">
+<div class="badge">画线器几何自检 <b>13/13</b></div>
+<div class="badge">浏览器交互自检 <b>跑通</b></div>
+<div class="badge">独立复验 <b>11/11</b></div>
+<div class="badge">流水线 <b>SUCCESS</b></div>
+<div class="badge">装配面 <b>6/6</b></div>
+<div class="badge">曲面分支 <b>10/10</b></div>
+<div class="badge">统一入口 <b>3/3</b></div>
+<div class="badge blue">资产库写入 <b>0</b></div>
+</div>
+
+<h2>① 这是什么模型</h2>
+<div class="grid4"><figure><img class="" src="new_model_iso.png" alt="new_model_iso.png"><figcaption>等轴测</figcaption></figure><figure><img class="" src="new_model_front.png" alt="new_model_front.png"><figcaption>正视</figcaption></figure><figure><img class="" src="new_model_side.png" alt="new_model_side.png"><figcaption>侧视</figcaption></figure><figure><img class="" src="new_model_top.png" alt="new_model_top.png"><figcaption>顶视</figcaption></figure></div>
+<div class="kv">
+<div><span>源 STL</span><b>500,000 面</b><span>1 个连通块 · 水密 · 零边界边</span></div>
+<div><span>毫米口径尺寸</span><b>101.2 mm 高</b><span>源 STL ×100，与 L9 同尺度</span></div>
+<div><span>体积</span><b>56,094 mm³</b><span>哪吒风格手办 + 云水底座</span></div>
+</div>
+
+<h2>① 附 · 离线画线器真实界面（Edge 无头截图，非示意图）</h2>
+<div class="panel"><img class="" src="L19-%E7%94%BB%E7%BA%BF%E5%99%A8%E7%95%8C%E9%9D%A2%E6%88%AA%E5%9B%BE.png" alt="L19-画线器界面截图.png"></div>
+<p class="lead">左侧为线段式画线 / 三种补全 / bulge / 导出 JSON 面板，右侧为 90k 面 LOD 模型；
+HUD 标明「89,954 面 · 134,911 对偶边 · 毫米口径 ×100 · 高 101.18 mm」。</p>
+
+<h2>② 切割前后（同一相机、同一光照）</h2>
+<div class="panel"><img class="" src="L19-%E5%88%87%E5%89%B2%E5%89%8D%E5%90%8E%E5%8F%AF%E8%A7%81%E5%AF%B9%E7%85%A7.png" alt="L19-切割前后可见对照.png"></div>
+
+<h2>③ 附 · 平面 vs 曲面：两种切面并排对照</h2>
+<div class="panel"><img class="" src="L19-%E5%B9%B3%E9%9D%A2%E4%B8%8E%E6%9B%B2%E9%9D%A2%E5%88%87%E5%89%B2%E5%AF%B9%E7%85%A7.png" alt="L19-平面与曲面切割对照.png"></div>
+<p class="lead">剖面图里两条曲线都用「实测切面顶点按 x 分箱的 z 均值」，口径一致：
+蓝线是单调直线（平面），橙线是 U 形二次曲线（曲面，z 跨度 3.06 mm）。
+统一入口 <code>l19_pipeline_auto.py</code> 三路实跑：平面 SUCCESS、
+曲面 SUCCESS、未闭合 REJECTED。</p>
+
+<h2>③ 附 · 非共面曲面切割（最大缺口已补上）</h2>
+<div class="panel"><img class="" src="L19_%E6%9B%B2%E9%9D%A2%E5%88%87%E5%89%B2%E7%88%86%E7%82%B8.png" alt="L19_曲面切割爆炸.png"></div>
+<p class="lead">割线共面 RMS 0.6701 mm（平面分支会拒收），
+改走 Delaunay 高度场膜曲面布尔：cutter 978 面水密，
+流水线 SUCCESS 10/10，
+体积误差 2.97e-10，切面 z 跨度 3.06 mm 且随 x 呈二次变化
+——切面真的弯曲，B 件顶部呈波浪状。v1 径向环因闭环非星形失败的证据完整保留。</p>
+
+<h2>④ 全链路证据</h2>
+<div class="panel"><img class="" src="L19-%E9%93%BE%E8%B7%AF%E4%B8%8E%E8%AF%81%E6%8D%AE%E4%BF%A1%E6%81%AF%E5%9B%BE.png" alt="L19-链路与证据信息图.png"></div>
+
+<h2>⑤ 关键数字</h2>
+<table>
+<tr><th>环节</th><th>结果</th><th>数字</th></tr>
+<tr><td>LOD 代理</td><td>89,954 面 / 44,933 顶点，单一连通块</td>
+<td class="num">体积误差 0.088%</td></tr>
+<tr><td>高模→代理映射</td><td>99.52% 的面心在 1 mm 内</td>
+<td class="num">中位 0.145 mm</td></tr>
+<tr><td>画线器</td><td>7.28 MB，89,954 面内联</td>
+<td class="num">13/13 自检</td></tr>
+<tr><td>斜割线</td><td>399 面闭环，倾斜 9.65°</td>
+<td class="num">RMS 0.0020 mm</td></tr>
+<tr><td>真切割</td><td>A 194,408 面 / B 309,530 面，均水密</td>
+<td class="num">布尔 10.02+9.8 s</td></tr>
+<tr><td>体积守恒</td><td>A+B = 56,093.787 mm³</td>
+<td class="num">误差 6.23e-06</td></tr>
+<tr><td>装配面</td><td>A 746.4 / B 742.3 mm²</td>
+<td class="num">平面度 2.9e-06 mm</td></tr>
+</table>
+
+<h2>⑤ 产物清单</h2>
+<table><tr><th>文件</th><th>说明</th><th>大小</th></tr><tr><td><code>new_model_showcase.blend</code></td><td>新模型展示工程（打开即所见，四视角 SOLID 分色）</td><td class='num'>23.93 MB</td></tr><tr><td><code>seam_draw_new.html</code></td><td>离线画线器（线段式 / bulge / 测地补全 / 后台平滑）</td><td class='num'>7.28 MB</td></tr><tr><td><code>L19-画线器界面截图.png</code></td><td>Edge 无头真实界面截图（面板 + 3D 视口）</td><td class='num'>0.30 MB</td></tr><tr><td><code>demo_seam_slanted.json</code></td><td>斜向闭环割线（9.65°，399 面）</td><td class='num'>0.03 MB</td></tr><tr><td><code>frontend_seam_v2.json</code></td><td>浏览器自检真实导出的 v2 割线（未闭合，被流水线拒收）</td><td class='num'>0.02 MB</td></tr><tr><td><code>l19_pipeline.py</code></td><td>一键链路：割线 → 拟合平面 → 布尔切割 → 清碎片 → 复验</td><td class='num'>0.01 MB</td></tr><tr><td><code>L19_cut_part_A.stl</code></td><td>上半件封闭实体</td><td class='num'>9.72 MB</td></tr><tr><td><code>L19_cut_part_B.stl</code></td><td>下半件封闭实体</td><td class='num'>15.48 MB</td></tr><tr><td><code>L19_cut_showcase.blend</code></td><td>两件独立对象的展示工程</td><td class='num'>24.17 MB</td></tr><tr><td><code>l19_verify_cut.json</code></td><td>平面分支 11 项独立复验结果</td><td class='num'>0.00 MB</td></tr><tr><td><code>L19-链路与证据信息图.png</code></td><td>全链路证据信息图</td><td class='num'>0.63 MB</td></tr><tr><td><code>demo_seam_curved.json</code></td><td>非共面闭环割线（共面 RMS 0.6701 mm）</td><td class='num'>0.02 MB</td></tr><tr><td><code>l19_pipeline_curved.py</code></td><td>曲面分支一键链路（割线 → Delaunay 膜 → 布尔 → 复验）</td><td class='num'>0.00 MB</td></tr><tr><td><code>L19_curved_part_A.stl</code></td><td>曲面分支上半件</td><td class='num'>9.60 MB</td></tr><tr><td><code>L19_curved_part_B.stl</code></td><td>曲面分支下半件</td><td class='num'>15.80 MB</td></tr><tr><td><code>l19_verify_curved.json</code></td><td>曲面分支 10 项独立复验结果</td><td class='num'>0.00 MB</td></tr></table>
+
+<h2>⑥ 边界与下一步</h2>
+<div class="note">
+<b>两条分支都打通：</b>共面闭环 → 平面布尔（11/11）；非共面闭环 → Delaunay 高度场膜曲面布尔（10/10）。
+两者都得到两件封闭实体；<code>closed=false</code> 会被主动拒收。<br>
+<b>统一入口已做：</b><code>l19_pipeline_auto.py</code> 按共面 RMS 自动路由并真正执行，
+三路实跑通过。<br>
+<b>剩余边界：</b>曲面 cutter 按高度场建模，自相交 / 垂直回折的环未验证；
+L9 面带分离（开放曲面）未接入。<br>
+<b>未做：</b>语义命名、骨架/约束、分色、打印朝向与支撑、定位销/榫卯、真实物理单位确认。<br>
+<b>精度提示：</b>50 万面恰好等于 84+500000×50 字节，疑似导出面数上限；若有更高精度原件需重跑全链。<br>
+<b>资产库：</b>按你的铁律，本轮零写入；候选清单已备好，等你过目确认后再传。<br>
+<b>下一步：</b>你画一条闭合割线 → 导出 v2 JSON → 跑 <code>python l19_pipeline.py --seam 你的.json --tag mycut</code>。
+</div>
+</div></body></html>

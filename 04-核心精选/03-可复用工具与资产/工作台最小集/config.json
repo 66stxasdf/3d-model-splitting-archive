@@ -1,0 +1,137 @@
+{
+ "models": [
+  {
+   "id": "ag-pl-1",
+   "name": "规划者 1 · 接口",
+   "provider": "mock",
+   "base_url": "",
+   "model": "demo-planner",
+   "note": "节点独立接口（Key 按此 ID 加密保存）"
+  },
+  {
+   "id": "ag-wk-1",
+   "name": "子 Agent 1 · 接口",
+   "provider": "mock",
+   "base_url": "",
+   "model": "demo-worker",
+   "note": "节点独立接口（Key 按此 ID 加密保存）"
+  },
+  {
+   "id": "ag-wk-2",
+   "name": "子 Agent 2 · 接口",
+   "provider": "mock",
+   "base_url": "",
+   "model": "demo-worker",
+   "note": "节点独立接口（Key 按此 ID 加密保存）"
+  }
+ ],
+ "agents": [
+  {
+   "id": "planner",
+   "name": "规划者",
+   "role": "planner",
+   "model_id": "mock-deep",
+   "sys": "你负责把用户任务拆成可执行的步骤，每步必须指明由哪个 Agent 完成。只输出 JSON。",
+   "tools": []
+  },
+  {
+   "id": "executor",
+   "name": "执行 Agent",
+   "role": "worker",
+   "model_id": "mock-fast",
+   "sys": "你负责按规划者给出的执行指令完成工作。",
+   "tools": []
+  }
+ ],
+ "manager": {
+  "model_id": "deepseek",
+  "label": "管理者模型"
+ },
+ "workers": [
+  {
+   "id": "w1",
+   "name": "子 Agent 1",
+   "model_id": "mock-fast",
+   "duty": "完成规划者分派的子任务",
+   "params": {}
+  },
+  {
+   "id": "w2",
+   "name": "子 Agent 2",
+   "model_id": "mock-deep",
+   "duty": "完成规划者分派的子任务",
+   "params": {}
+  }
+ ],
+ "team": [
+  {
+   "id": "pl-1",
+   "kind": "planner",
+   "name": "规划者 1",
+   "model_id": "ag-pl-1",
+   "duty": "分析任务、翻译成子 Agent 能执行的指令、复核并汇总结果",
+   "x": 0,
+   "y": 133,
+   "params": {
+    "max_rounds": 2,
+    "review": true,
+    "allow_handoff": true
+   },
+   "lead": true
+  },
+  {
+   "id": "wk-1",
+   "kind": "worker",
+   "name": "子 Agent 1",
+   "model_id": "ag-wk-1",
+   "duty": "识别执行指令，独立思考并交付可复核的结果",
+   "x": 497,
+   "y": 0,
+   "params": {
+    "temperature": 0.3,
+    "max_tokens": 2048,
+    "allow_handoff": true
+   },
+   "planner_id": "pl-1"
+  },
+  {
+   "id": "wk-2",
+   "kind": "worker",
+   "name": "子 Agent 2",
+   "model_id": "ag-wk-2",
+   "duty": "识别执行指令，独立思考并交付可复核的结果",
+   "x": 450,
+   "y": 448,
+   "params": {
+    "temperature": 0.3,
+    "max_tokens": 2048,
+    "allow_handoff": true
+   },
+   "planner_id": "pl-1"
+  }
+ ],
+ "orchestration": {
+  "max_rounds": 2,
+  "max_subtasks": 12,
+  "max_seconds": 180,
+  "parallel": true,
+  "step_delay": 0.3,
+  "label": "协作编排（规划者分析 / 子 Agent 执行 / 规划者复核）"
+ },
+ "runtime": {
+  "ollama": false
+ },
+ "result_format": "markdown",
+ "result_merge": "planner",
+ "confidence": 0.6,
+ "auto_show_answer": true,
+ "result_pos": {
+  "x": 989.612,
+  "y": 243.181
+ },
+ "cuts": [
+  "auto:pw:wk-2",
+  "auto:pr:lead"
+ ],
+ "links": []
+}

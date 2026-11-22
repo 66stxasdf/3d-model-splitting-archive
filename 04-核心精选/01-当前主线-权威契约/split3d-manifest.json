@@ -1,0 +1,466 @@
+{
+  "schema": "agentcore.pack/v1",
+  "name": "split3d",
+  "version": "0.2.0",
+  "title": "3D 打印分件（契约已就位，能力待填）",
+  "desc": "整体公仔 → 认出有名字的语义部位 → 每件单独可打印 → 件间有连接结构 → 拼得起来。本包只声明契约：事实、工具、校验器的形状与依赖全写好了，实现留空。用 doctor 可以立刻看到「还差哪些活」。",
+  "const": {
+    "lod_faces": 89954,
+    "coplanar_rms_mm": 0.5,
+    "pin_diameter_mm": 3.0,
+    "radial_clearance_mm": 0.2,
+    "hole_depth_slack_mm": 0.4,
+    "min_wall_mm": 0.8,
+    "min_contact_area_mm2": 20.0,
+    "semantic_match_floor": 0.5,
+    "semantic_min_iou": 0.6,
+    "cut_volume_tol": 0.001
+  },
+  "facts": [
+    {
+      "id": "input_ok",
+      "label": "入厂质检通过",
+      "group": "admission",
+      "desc": "网格可读、水密、尺度可知。这一步不通过，后面全是空谈"
+    },
+    {
+      "id": "lod_ready",
+      "label": "降面模型已就绪",
+      "group": "prepare",
+      "desc": "原始网格动辄几十万面，几何运算要在降面版上做，交付回到原网格"
+    },
+    {
+      "id": "seam_ok",
+      "label": "割线准入通过",
+      "group": "optional",
+      "desc": "人工画的割线合法（闭合、无回折、可拟合）。没有割线时这一支不参与"
+    },
+    {
+      "id": "route_known",
+      "label": "切割分支已确定",
+      "group": "optional",
+      "desc": "平面缝走半空间布尔。曲缝切割需 cut_curved 工具，当前未实现，暂不支持曲缝分支"
+    },
+    {
+      "id": "parts_available",
+      "label": "零件已分出",
+      "group": "core",
+      "desc": "一次分出 N 个零件，产出 part_ids 清单。语义分件与人工割线切割都汇到这里"
+    },
+    {
+      "id": "part_clean",
+      "label": "单件碎块已清理",
+      "group": "core",
+      "domain": {
+        "from": "part_ids",
+        "key": "part"
+      },
+      "desc": "每一件各自清理薄碎片、封口"
+    },
+    {
+      "id": "part_verified",
+      "label": "单件复验通过",
+      "group": "verify",
+      "domain": {
+        "from": "part_ids",
+        "key": "part"
+      },
+      "desc": "每一件各自核对：封闭、体积守恒、无互穿、壁厚达标"
+    },
+    {
+      "id": "contacts_found",
+      "label": "接触面对已识别",
+      "group": "joint",
+      "desc": "找出所有相邻零件对，产出 pair_ids 清单。一次识别全部对"
+    },
+    {
+      "id": "joint_built",
+      "label": "单对连接已生成",
+      "group": "joint",
+      "domain": {
+        "from": "pair_ids",
+        "key": "pair"
+      },
+      "desc": "每一对各自长出连接结构（销/榫/卡扣）"
+    },
+    {
+      "id": "joints_verified",
+      "label": "连接复验通过",
+      "group": "joint",
+      "domain": {
+        "from": "pair_ids",
+        "key": "pair"
+      },
+      "desc": "每一对各自核对：实测间隙、销尖余量、不穿透"
+    },
+    {
+      "id": "part_exported",
+      "label": "单件已导出",
+      "group": "deliver",
+      "domain": {
+        "from": "part_ids",
+        "key": "part"
+      },
+      "desc": "每一件各自导出 STL/3MF，单独可打印"
+    },
+    {
+      "id": "assembled_ok",
+      "label": "装配可成立",
+      "group": "deliver",
+      "desc": "全部连接对齐后能拼成一个整体，且不错位"
+    }
+  ],
+  "verifiers": {
+    "input_ok": "split3d_verify:input_ok",
+    "lod_ready": "split3d_verify:lod_ready",
+    "seam_ok": "split3d_verify:seam_ok",
+    "route_known": "split3d_verify:route_known",
+    "parts_available": "split3d_verify:parts_available",
+    "part_clean": "split3d_verify:part_clean",
+    "part_verified": "split3d_verify:part_verified",
+    "contacts_found": "split3d_verify:contacts_found",
+    "joint_built": "split3d_verify:joint_built",
+    "joints_verified": "split3d_verify:joints_verified",
+    "part_exported": "split3d_verify:part_exported",
+    "assembled_ok": "split3d_verify:assembled_ok"
+  },
+  "tools": [
+    {
+      "name": "probe_import",
+      "title": "入厂质检",
+      "produces": "input_ok",
+      "requires": [],
+      "params": {
+        "model": "$input.model"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:probe_import",
+        "timeout_s": 900
+      },
+      "admission": true,
+      "on_fail": "abort",
+      "cost_s": 5,
+      "priority": 0,
+      "desc": "读网格：水密性、连通块、退化面、包围盒、尺度。不判断该怎么切，只判断能不能做",
+      "writes": [
+        "model_path",
+        "src_sha",
+        "scale",
+        "scale_source"
+      ]
+    },
+    {
+      "name": "prep_lod",
+      "title": "生成降面模型",
+      "produces": "lod_ready",
+      "requires": [
+        "input_ok"
+      ],
+      "params": {
+        "src": "$value.model_path",
+        "faces": "$const.lod_faces",
+        "out_dir": "$run_dir/geometry"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:prep_lod",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "abort",
+      "cost_s": 120,
+      "priority": 0,
+      "desc": "焊点后降到约定面数。原网格留着交付用，运算都用降面版",
+      "writes": [
+        "lod_path"
+      ]
+    },
+    {
+      "name": "segment_semantic",
+      "title": "语义部位识别与分件",
+      "produces": "parts_available",
+      "requires": [
+        "input_ok",
+        "lod_ready"
+      ],
+      "params": {
+        "src": "$value.lod_path",
+        "out_dir": "$run_dir/parts",
+        "min_wall_mm": "$const.min_wall_mm",
+        "model_kind": "$input.model_kind"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:segment_semantic",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "abort",
+      "cost_s": 300,
+      "priority": 10,
+      "needs_fields": [
+        "inputs.model_kind"
+      ],
+      "desc": "认出头/手/背包/鞋/眼睛/头发这类有名字的部位并各自成体。产出 part_ids 清单，每件网格写到 parts_dir。这是整条链最关键的一步，也是目前唯一没有现成实现的一步。走这条路必须先声明类型（model_kind）：人声明优先、模型提议需人确认、不确定就拒收——没有类型声明时本工具不可达，goal=parts 会 0 步 NEED_INPUT，而不是让算法猜一个类型硬上",
+      "writes": [
+        "part_ids",
+        "parts_dir"
+      ]
+    },
+    {
+      "name": "seam_ingest",
+      "title": "割线准入",
+      "produces": "seam_ok",
+      "requires": [
+        "lod_ready"
+      ],
+      "params": {
+        "seam": "$input.seam",
+        "src": "$value.lod_path"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:seam_ingest",
+        "timeout_s": 900
+      },
+      "admission": true,
+      "on_fail": "abort",
+      "cost_s": 10,
+      "priority": 0,
+      "desc": "割线必须闭合、首尾贴合、无回折。不合格就不该开始切",
+      "writes": [
+        "seam_norm"
+      ],
+      "needs_fields": [
+        "inputs.seam"
+      ]
+    },
+    {
+      "name": "route_branch",
+      "title": "选择切割分支",
+      "produces": "route_known",
+      "requires": [
+        "seam_ok"
+      ],
+      "params": {
+        "seam": "$value.seam_norm"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:route_branch",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "abort",
+      "cost_s": 2,
+      "priority": 0,
+      "desc": "按割线平面拟合残差选分支：当前仅实现平面分支（半空间布尔）。曲缝切割需 cut_curved 工具，尚未实现，故暂不支持曲缝——遇到曲缝应判不支持，而非静默路由到不存在的工具",
+      "writes": [
+        "branch"
+      ]
+    },
+    {
+      "name": "cut_plane",
+      "title": "按割线切分",
+      "produces": "parts_available",
+      "requires": [
+        "route_known",
+        "lod_ready"
+      ],
+      "params": {
+        "src": "$value.lod_path",
+        "seam": "$value.seam_norm",
+        "branch": "$value.branch",
+        "out_dir": "$run_dir/parts"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:cut_plane",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "abort",
+      "cost_s": 180,
+      "priority": 20,
+      "desc": "用割线构造半空间盒做布尔切分，一侧一件。注意：它切出来的件是「几何块」不是「语义部位」，命名只能按位置（piece_A/piece_B），不能编成 head/arm。优先级高于语义分件：人明确画了割线就按他的切，别用算法去改人的决定",
+      "writes": [
+        "part_ids",
+        "parts_dir"
+      ]
+    },
+    {
+      "name": "clean_part",
+      "title": "单件清理",
+      "produces": "part_clean",
+      "requires": [
+        "parts_available"
+      ],
+      "params": {},
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:clean_part",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "skip_instance",
+      "cost_s": 30,
+      "priority": 0,
+      "desc": "每件各自：剔薄碎片、补洞封口、确认是单个封闭体。一件出问题只放弃这一件，其余继续",
+      "writes": [
+        "clean_dir"
+      ]
+    },
+    {
+      "name": "verify_part",
+      "title": "单件复验",
+      "produces": "part_verified",
+      "requires": [
+        "part_clean"
+      ],
+      "params": {},
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:verify_part",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "skip_instance",
+      "cost_s": 40,
+      "priority": 0,
+      "desc": "每件各自核对：水密、自交、体积、壁厚。结果由校验器从磁盘重算，工具说的不算"
+    },
+    {
+      "name": "find_contacts",
+      "title": "识别接触面对",
+      "produces": "contacts_found",
+      "requires": [
+        "part_verified"
+      ],
+      "params": {
+        "in_dir": "$value.clean_dir"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:find_contacts",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "abort",
+      "cost_s": 120,
+      "priority": 0,
+      "desc": "两两求接触面，双向交叉验证（A 侧与 B 侧各自测出的面积/法向必须一致）。产出 pair_ids 清单，格式 `部件A__部件B`",
+      "writes": [
+        "pair_ids",
+        "contacts_dir"
+      ]
+    },
+    {
+      "name": "build_joint",
+      "title": "生成单对连接结构",
+      "produces": "joint_built",
+      "requires": [
+        "contacts_found"
+      ],
+      "params": {},
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:build_joint",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "skip_instance",
+      "cost_s": 90,
+      "priority": 0,
+      "desc": "每一对各自生成连接：销长在薄件、孔开在厚件、一对至少两根销才约束得住绕法向的旋转",
+      "writes": [
+        "joint_dir"
+      ]
+    },
+    {
+      "name": "verify_joint",
+      "title": "连接复验",
+      "produces": "joints_verified",
+      "requires": [
+        "joint_built"
+      ],
+      "params": {},
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:verify_joint",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "skip_instance",
+      "cost_s": 60,
+      "priority": 0,
+      "desc": "每一对各自核对：实测径向间隙、销尖余量、孔底留厚、不穿透"
+    },
+    {
+      "name": "export_part",
+      "title": "单件导出",
+      "produces": "part_exported",
+      "requires": [
+        "part_verified"
+      ],
+      "params": {
+        "out_dir": "$run_dir/deliver"
+      },
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:export_part",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "skip_instance",
+      "cost_s": 30,
+      "priority": 0,
+      "desc": "每件各自导出 STL + 3MF。分开导出才能真正分开打印"
+    },
+    {
+      "name": "assemble_check",
+      "title": "装配可成立性检查",
+      "produces": "assembled_ok",
+      "requires": [
+        "joints_verified",
+        "part_exported"
+      ],
+      "params": {},
+      "impl": {
+        "type": "python",
+        "ref": "split3d_impl:assemble_check",
+        "timeout_s": 900
+      },
+      "admission": false,
+      "on_fail": "abort",
+      "cost_s": 60,
+      "priority": 0,
+      "desc": "把全部连接按最终姿态对齐，确认整体能拼起来、不穿模、站得住"
+    }
+  ],
+  "goals": {
+    "inspect": [
+      "input_ok"
+    ],
+    "parts": [
+      "parts_available"
+    ],
+    "clean": [
+      "part_clean"
+    ],
+    "verified": [
+      "part_verified"
+    ],
+    "joints": [
+      "joints_verified"
+    ],
+    "deliver": [
+      "part_exported"
+    ],
+    "full": [
+      "part_exported",
+      "joints_verified",
+      "assembled_ok"
+    ]
+  }
+}

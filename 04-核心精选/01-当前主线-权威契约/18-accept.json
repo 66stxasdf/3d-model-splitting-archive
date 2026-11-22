@@ -1,0 +1,549 @@
+{
+  "at": "2026-11-12T20:36:49",
+  "passed": 30,
+  "n": 30,
+  "elapsed_s": 10.6,
+  "kernel": "agentcore 0.1.0",
+  "results": [
+    {
+      "id": "T1",
+      "desc": "只做质检，1 步收工",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "steps": 1,
+        "artifacts": 0,
+        "path": [
+          "probe"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.05
+    },
+    {
+      "id": "T2",
+      "desc": "默认交付路径是推出来的 8 步",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "path": [
+          "probe",
+          "ingest",
+          "check_blocks",
+          "route",
+          "cut_fixed",
+          "cleanup",
+          "verify_parts",
+          "export"
+        ],
+        "parts": 2
+      },
+      "err": "",
+      "elapsed_s": 0.04
+    },
+    {
+      "id": "T3",
+      "desc": "加目标就多一步且插对位置",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "path": [
+          "probe",
+          "ingest",
+          "check_blocks",
+          "route",
+          "cut_fixed",
+          "cleanup",
+          "verify_parts",
+          "assemble",
+          "export"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.04
+    },
+    {
+      "id": "T4",
+      "desc": "条件分支：换模式走另一个工具",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "path": [
+          "probe",
+          "ingest",
+          "check_blocks",
+          "route",
+          "cut_adaptive",
+          "cleanup",
+          "verify_parts",
+          "export"
+        ],
+        "mode": "adaptive"
+      },
+      "err": "",
+      "elapsed_s": 0.04
+    },
+    {
+      "id": "T5",
+      "desc": "源文件不存在 → 主动拒收",
+      "ok": true,
+      "got": {
+        "verdict": "REJECTED",
+        "code": "INPUT_NOT_FOUND",
+        "artifacts": 0,
+        "steps": 1
+      },
+      "err": "",
+      "elapsed_s": 0.01
+    },
+    {
+      "id": "T6",
+      "desc": "空文件 → 准入拦下",
+      "ok": true,
+      "got": {
+        "verdict": "REJECTED",
+        "code": "INPUT_EMPTY",
+        "steps": 1
+      },
+      "err": "",
+      "elapsed_s": 0.01
+    },
+    {
+      "id": "T7",
+      "desc": "预算耗尽 → 如实报 BUDGET",
+      "ok": true,
+      "got": {
+        "verdict": "UNDECIDABLE",
+        "code": "BUDGET_EXHAUSTED",
+        "steps": 3
+      },
+      "err": "",
+      "elapsed_s": 0.02
+    },
+    {
+      "id": "T8",
+      "desc": "重复动作 → 防环拦截",
+      "ok": true,
+      "got": {
+        "verdict": "FAILED",
+        "code": "STUCK",
+        "duplicates_blocked": 1,
+        "steps": 1
+      },
+      "err": "",
+      "elapsed_s": 0.01
+    },
+    {
+      "id": "T9",
+      "desc": "工具故障 → 自己改道，且理由写进报告",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS_WITH_WARNINGS",
+        "path": [
+          "probe",
+          "ingest",
+          "check_blocks",
+          "route",
+          "cut_fixed",
+          "cleanup",
+          "cleanup_keepall",
+          "verify_parts",
+          "export"
+        ],
+        "warnings": [
+          "`cleanup` 失败（CLEANUP_FAILED），已停用并改走其它路径",
+          "清理步骤走了保守回退，未丢弃任何碎片"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.53
+    },
+    {
+      "id": "T10",
+      "desc": "工具撒谎 → 校验器拦下",
+      "ok": true,
+      "got": {
+        "verdict": "FAILED",
+        "code": "VERIFY_FAILED",
+        "rejected_by_verify": 1,
+        "steps": 5
+      },
+      "err": "",
+      "elapsed_s": 0.4
+    },
+    {
+      "id": "T11",
+      "desc": "换实现不改内核",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "parts": 3,
+        "note": "demo 原实现是 2 份，换实现后是 3 份"
+      },
+      "err": "",
+      "elapsed_s": 0.4
+    },
+    {
+      "id": "T12",
+      "desc": "probe_import 已落地：缺文件拒收 + 合法准入；其余仍是桩",
+      "ok": true,
+      "got": {
+        "a": {
+          "verdict": "REJECTED",
+          "code": "FILE_UNREADABLE"
+        },
+        "b": {
+          "verdict": "SUCCESS",
+          "facts": [
+            "input_ok"
+          ]
+        },
+        "c": {
+          "verdict": "UNDECIDABLE",
+          "code": "NOT_IMPLEMENTED"
+        }
+      },
+      "err": "",
+      "elapsed_s": 2.0
+    },
+    {
+      "id": "T13",
+      "desc": "缺输入 → 0 步诊断出依赖链",
+      "ok": true,
+      "got": {
+        "verdict": "UNDECIDABLE",
+        "steps": 0,
+        "halt": "NEED_INPUT",
+        "chain": [
+          "seam_ok"
+        ],
+        "why": "卡在「割线准入通过」：任务单未提供 `inputs.seam`"
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T14",
+      "desc": "坏契约 → doctor 一次说清",
+      "ok": true,
+      "got": {
+        "ok": false,
+        "errors": [
+          "工具 t1 产出未登记的事实 `没登记的事实`",
+          "工具 t4 的条件语法错：无法求值的记号 ''",
+          "事实「甲」没有任何校验器——工具自报产出会被直接采信，这是内核不允许的",
+          "事实「乙」没有任何校验器——工具自报产出会被直接采信，这是内核不允许的",
+          "工具依赖成环：t2 → t3 → t2"
+        ],
+        "hit": [
+          "未登记的事实",
+          "校验器",
+          "成环",
+          "语法"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T15",
+      "desc": "两个领域共用同一内核",
+      "ok": true,
+      "got": {
+        "core_modules": {
+          "agentcore.loop": "D:\\workbuddy产物\\18-分件Agent内核\\agentcore\\loop.py",
+          "agentcore.planner": "D:\\workbuddy产物\\18-分件Agent内核\\agentcore\\planner.py",
+          "agentcore.world": "D:\\workbuddy产物\\18-分件Agent内核\\agentcore\\world.py",
+          "agentcore.contract": "D:\\workbuddy产物\\18-分件Agent内核\\agentcore\\contract.py"
+        },
+        "per_pack_agent_modules": []
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T16",
+      "desc": "断点续跑不重做已完成的事",
+      "ok": true,
+      "got": {
+        "first_steps": 1,
+        "resume_steps": 0,
+        "verdict": "SUCCESS",
+        "resume_of": "203642-t16a"
+      },
+      "err": "",
+      "elapsed_s": 0.03
+    },
+    {
+      "id": "T17",
+      "desc": "12 件跑满 12 次，一件不少",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "steps": 38,
+        "parts": 12,
+        "instances": {
+          "chapter_clean": 12,
+          "chapter_exported": 12,
+          "chapter_verified": 12
+        },
+        "unique_actions": 36,
+        "dup_blocked": 0
+      },
+      "err": "",
+      "elapsed_s": 0.13
+    },
+    {
+      "id": "T18",
+      "desc": "某件谎报 → 拦住并说清是哪件",
+      "ok": true,
+      "got": {
+        "verdict": "FAILED",
+        "code": "VERIFY_FAILED",
+        "rejected": 1,
+        "mentions_ch05": true,
+        "reasons": []
+      },
+      "err": "",
+      "elapsed_s": 0.59
+    },
+    {
+      "id": "T19",
+      "desc": "少一件 → 不许判成功",
+      "ok": true,
+      "got": {
+        "verdict": "FAILED",
+        "code": "CHAPTER_BROKEN",
+        "done": {
+          "chapter_clean": 11,
+          "chapter_exported": 11,
+          "chapter_verified": 11
+        },
+        "abandoned": {
+          "chapter_clean": [
+            "ch05"
+          ],
+          "chapter_exported": [
+            "ch05"
+          ],
+          "chapter_verified": [
+            "ch05"
+          ]
+        },
+        "reasons": []
+      },
+      "err": "",
+      "elapsed_s": 0.5
+    },
+    {
+      "id": "T20",
+      "desc": "清单撒谎 → 数磁盘拦住",
+      "ok": true,
+      "got": {
+        "verdict": "REJECTED",
+        "code": "VERIFY_FAILED",
+        "rejected": 1,
+        "reasons": [
+          "切出章节清单：自称完成但校验不通过：清单与磁盘不一致：报 12 章，磁盘上有 5 个文件"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 1.38
+    },
+    {
+      "id": "T21",
+      "desc": "三态：未知/空/部分/全部不混",
+      "ok": true,
+      "got": {
+        "states": {
+          "未知": null,
+          "空清单": false,
+          "一个没做": false,
+          "做了一半": false,
+          "全做完": true
+        },
+        "whole_fact_refused": true
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T22",
+      "desc": "预览预报会跑 N 次",
+      "ok": true,
+      "got": {
+        "tools": [
+          "probe",
+          "list_chapters",
+          "clean_chapter",
+          "verify_chapter",
+          "export_chapter"
+        ],
+        "preview_steps": 5,
+        "mentions_n": true
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T23",
+      "desc": "给不给割线 → 两条入口自动切换",
+      "ok": true,
+      "got": {
+        "no_seam": [
+          "probe_import",
+          "prep_lod",
+          "segment_semantic"
+        ],
+        "with_seam": [
+          "probe_import",
+          "prep_lod",
+          "seam_ingest",
+          "route_branch",
+          "cut_plane"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T24",
+      "desc": "按实例工具写全局值 → 下游读得到，且实例值不串台",
+      "ok": true,
+      "got": {
+        "verdict": "SUCCESS",
+        "code": "",
+        "steps": 5,
+        "global_has_build_root": true,
+        "global_leaked_part_path": false,
+        "scoped_keys": [
+          "@a",
+          "@b",
+          "@c"
+        ],
+        "summary_n": 3,
+        "instance_actions": 3
+      },
+      "err": "",
+      "elapsed_s": 0.36
+    },
+    {
+      "id": "T25",
+      "desc": "隐式依赖 → doctor 静态判死，不靠技能自觉",
+      "ok": true,
+      "got": {
+        "current_errors": [],
+        "missing_requires": [
+          "工具 segment_semantic 参数 src 引用 `$value.lod_path`（由 prep_lod(产出 lod_ready) 写入），但该事实不在它的 requires 依赖链上——这是隐式依赖，单独跑会 MISSING_PARAM。请把对应事实补进 requires"
+        ],
+        "missing_writes": [
+          "工具 prep_lod 参数 src 引用 `$value.model_path`，但没有任何工具的 writes 声明会写入它——运行时必然取不到值"
+        ],
+        "caught_implicit": true,
+        "caught_orphan": true
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T26",
+      "desc": "接口书契约快照 ↔ manifest，漂移/标记消失都会 FAIL",
+      "ok": true,
+      "got": {
+        "current_errors": [],
+        "tools_in_snapshot": [
+          "cut_plane",
+          "segment_semantic"
+        ],
+        "counterexample_untouched": true,
+        "drift_caught": true,
+        "marker_caught": true,
+        "negative_a": [
+          "segment_semantic 的 requires：文档 ['input_ok']，契约 ['input_ok', 'lod_ready']"
+        ],
+        "negative_b": [
+          "找不到带 CONTRACT-SNAPSHOT 标记的契约快照——检查器不能因为标记消失就静默 PASS"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T27",
+      "desc": "没声明类型 → 语义分件不可达，0 步 NEED_INPUT",
+      "ok": true,
+      "got": {
+        "no_kind": {
+          "verdict": "UNDECIDABLE",
+          "steps": 0,
+          "halt": "NEED_INPUT",
+          "why": "卡在「零件已分出」：任务单未提供 `inputs.model_kind`"
+        },
+        "with_kind_path": [
+          "probe_import",
+          "prep_lod",
+          "segment_semantic"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 0.0
+    },
+    {
+      "id": "T28",
+      "desc": "parts_available 校验器：漏分/错分/无真值/磁盘不符全抓住",
+      "ok": true,
+      "got": {
+        "full_match": true,
+        "missed_caught": true,
+        "swap_caught": true,
+        "naming_boundary_pinned": true,
+        "no_ref_unknown": true,
+        "disk_mismatch_caught": true,
+        "full_ious": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "miss_why": "漏分 1 件（真值里有、产物里没有）：['ARM_L']",
+        "swap_why": "漏分 1 件（真值里有、产物里没有）：['ANTENNA']"
+      },
+      "err": "",
+      "elapsed_s": 1.23
+    },
+    {
+      "id": "T29",
+      "desc": "错误记忆：同错二次认出、三次拒收、修好作废、再犯重开",
+      "ok": true,
+      "got": {
+        "first_quiet": true,
+        "second_warn": true,
+        "third_reject": true,
+        "healed": true,
+        "quiet_after_heal": true,
+        "reopened": true,
+        "warn_text": "历史错误记忆命中（同输入重复失败，未解决）：clean_chapter@ch05 INSTANCE_ABANDONED ×2（实例 `ch05` 已放弃：第 ch05 章内容损坏，无法清洗（其余实例继续；连带受影响：单章已清洗、单章已导出、"
+      },
+      "err": "",
+      "elapsed_s": 1.77
+    },
+    {
+      "id": "T30",
+      "desc": "同码不同病因不得误命中（ch05 ≠ ch07）",
+      "ok": true,
+      "got": {
+        "distinct_fp": true,
+        "only_ch05_hit": true,
+        "n_ch05_entries": 2,
+        "n_ch07_entries": 2,
+        "hits5": [
+          null,
+          "ch05",
+          "ch05"
+        ]
+      },
+      "err": "",
+      "elapsed_s": 1.03
+    }
+  ]
+}

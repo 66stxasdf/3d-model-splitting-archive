@@ -1,0 +1,1398 @@
+{
+  "model": "MK02",
+  "name": "哨兵 MK-02",
+  "params": {
+    "total_height": 201.65,
+    "gap": 0.15,
+    "pin_clearance": 0.2,
+    "design": "竖直分件链 + 壳层嵌套 + 表面嵌件 + 同心套筒 + 左右拼合"
+  },
+  "units": "mm",
+  "parts": [
+    {
+      "pid": "BASE",
+      "name": "底座",
+      "group": "base",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "平底朝下，零支撑",
+      "joint": "承接左右 FOOT 竖销",
+      "volume_mm3": 27551.72568408044,
+      "bbox": [
+        78.0,
+        78.0,
+        6.0
+      ],
+      "bbox_min": [
+        -39.0,
+        -39.0,
+        -4.440892098500626e-16
+      ],
+      "bbox_max": [
+        39.0,
+        39.0,
+        6.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "FOOT_L",
+      "name": "脚 L",
+      "group": "leg",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "底面朝下",
+      "joint": "下销入 BASE；上孔接 ANKLE",
+      "volume_mm3": 12285.972480847988,
+      "bbox": [
+        30.0,
+        36.0,
+        15.5
+      ],
+      "bbox_min": [
+        -38.0,
+        -20.0,
+        2.6500000000000004
+      ],
+      "bbox_max": [
+        -8.0,
+        16.0,
+        18.15
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "ANKLE_L",
+      "name": "踝环 L",
+      "group": "leg",
+      "color": "#E4572E",
+      "material": "orange",
+      "print_note": "平放，环轴竖直",
+      "joint": "上下各一竖销",
+      "volume_mm3": 1486.176481472904,
+      "bbox": [
+        21.0,
+        21.0,
+        8.0
+      ],
+      "bbox_min": [
+        -33.5,
+        -12.5,
+        15.3
+      ],
+      "bbox_max": [
+        -12.5,
+        8.5,
+        23.3
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "SHIN_L",
+      "name": "小腿 L",
+      "group": "leg",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "锥头朝上直立",
+      "joint": "上下各一竖销",
+      "volume_mm3": 4826.809973618635,
+      "bbox": [
+        15.0,
+        15.0,
+        35.5
+      ],
+      "bbox_min": [
+        -30.5,
+        -9.5,
+        19.95
+      ],
+      "bbox_max": [
+        -15.5,
+        5.5,
+        55.45
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "KNEE_L",
+      "name": "膝甲 L",
+      "group": "leg",
+      "color": "#E4572E",
+      "material": "orange",
+      "print_note": "平底朝下",
+      "joint": "上下各一竖销",
+      "volume_mm3": 4232.513812617681,
+      "bbox": [
+        20.0,
+        22.0,
+        14.5
+      ],
+      "bbox_min": [
+        -33.0,
+        -12.0,
+        52.1
+      ],
+      "bbox_max": [
+        -13.0,
+        10.0,
+        66.6
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "THIGH_L",
+      "name": "大腿 L",
+      "group": "leg",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "直立",
+      "joint": "下销入 KNEE；顶孔接 HIP",
+      "volume_mm3": 4313.51562192411,
+      "bbox": [
+        16.0,
+        16.0,
+        26.0
+      ],
+      "bbox_min": [
+        -31.0,
+        -8.0,
+        62.75
+      ],
+      "bbox_max": [
+        -15.0,
+        8.0,
+        88.75
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "FOOT_R",
+      "name": "脚 R",
+      "group": "leg",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "底面朝下",
+      "joint": "下销入 BASE；上孔接 ANKLE",
+      "volume_mm3": 12285.972480847988,
+      "bbox": [
+        30.0,
+        36.0,
+        15.5
+      ],
+      "bbox_min": [
+        8.0,
+        -20.0,
+        2.6500000000000004
+      ],
+      "bbox_max": [
+        38.0,
+        16.0,
+        18.15
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "ANKLE_R",
+      "name": "踝环 R",
+      "group": "leg",
+      "color": "#E4572E",
+      "material": "orange",
+      "print_note": "平放，环轴竖直",
+      "joint": "上下各一竖销",
+      "volume_mm3": 1486.176481472904,
+      "bbox": [
+        21.0,
+        21.0,
+        8.0
+      ],
+      "bbox_min": [
+        12.5,
+        -12.5,
+        15.3
+      ],
+      "bbox_max": [
+        33.5,
+        8.5,
+        23.3
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "SHIN_R",
+      "name": "小腿 R",
+      "group": "leg",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "锥头朝上直立",
+      "joint": "上下各一竖销",
+      "volume_mm3": 4826.809973618635,
+      "bbox": [
+        15.0,
+        15.0,
+        35.5
+      ],
+      "bbox_min": [
+        15.5,
+        -9.5,
+        19.95
+      ],
+      "bbox_max": [
+        30.5,
+        5.5,
+        55.45
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "KNEE_R",
+      "name": "膝甲 R",
+      "group": "leg",
+      "color": "#E4572E",
+      "material": "orange",
+      "print_note": "平底朝下",
+      "joint": "上下各一竖销",
+      "volume_mm3": 4232.513812617681,
+      "bbox": [
+        20.0,
+        22.0,
+        14.5
+      ],
+      "bbox_min": [
+        13.0,
+        -12.0,
+        52.1
+      ],
+      "bbox_max": [
+        33.0,
+        10.0,
+        66.6
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "THIGH_R",
+      "name": "大腿 R",
+      "group": "leg",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "直立",
+      "joint": "下销入 KNEE；顶孔接 HIP",
+      "volume_mm3": 4313.51562192411,
+      "bbox": [
+        16.0,
+        16.0,
+        26.0
+      ],
+      "bbox_min": [
+        15.0,
+        -8.0,
+        62.75
+      ],
+      "bbox_max": [
+        31.0,
+        8.0,
+        88.75
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "HIP",
+      "name": "髋横梁",
+      "group": "waist",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "平底朝下",
+      "joint": "向下双销入大腿；顶孔接腰环销",
+      "volume_mm3": 11442.912302570092,
+      "bbox": [
+        56.0,
+        24.0,
+        13.5
+      ],
+      "bbox_min": [
+        -28.0000001,
+        -12.0,
+        84.39999990000001
+      ],
+      "bbox_max": [
+        28.0000001,
+        12.0,
+        97.9
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "WAIST",
+      "name": "腰环",
+      "group": "waist",
+      "color": "#F3B23C",
+      "material": "gold",
+      "print_note": "平底朝下",
+      "joint": "下销入 HIP；顶面两孔给躯干",
+      "volume_mm3": 8560.414818826404,
+      "bbox": [
+        36.0,
+        36.0,
+        13.0
+      ],
+      "bbox_min": [
+        -18.0,
+        -18.0,
+        94.05
+      ],
+      "bbox_max": [
+        18.0,
+        18.0,
+        107.05
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "TORSO_BACK",
+      "name": "躯干后",
+      "group": "torso",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "背面朝下",
+      "joint": "下销入 WAIST；顶颈孔 / 侧肩孔 / 背扣槽",
+      "volume_mm3": 34420.81658026165,
+      "bbox": [
+        50.0,
+        25.35,
+        50.3
+      ],
+      "bbox_min": [
+        -25.0000001,
+        -6.0000001,
+        103.2
+      ],
+      "bbox_max": [
+        25.0000001,
+        19.35,
+        153.5
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "TORSO_FRONT",
+      "name": "躯干前",
+      "group": "torso",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "正面朝下",
+      "joint": "下销入 WAIST；胸核沉孔",
+      "volume_mm3": 18012.86401902812,
+      "bbox": [
+        42.0,
+        15.15,
+        40.0
+      ],
+      "bbox_min": [
+        -21.0,
+        -15.150000100000002,
+        103.19999990000001
+      ],
+      "bbox_max": [
+        21.0,
+        1e-07,
+        143.20000009999998
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "CHEST_RING",
+      "name": "胸核外环",
+      "group": "detail",
+      "color": "#F3B23C",
+      "material": "gold",
+      "print_note": "轴水平，正面朝下",
+      "joint": "嵌入前胸沉孔；须待 MID 抽出后",
+      "volume_mm3": 1300.7764382188534,
+      "bbox": [
+        21.7,
+        6.5,
+        21.7
+      ],
+      "bbox_min": [
+        -10.85,
+        -14.5,
+        107.15
+      ],
+      "bbox_max": [
+        10.85,
+        -8.0,
+        128.85
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "CHEST_MID",
+      "name": "胸核中层",
+      "group": "detail",
+      "color": "#E4572E",
+      "material": "orange",
+      "print_note": "轴水平",
+      "joint": "套在 RING 内孔；须待 CORE 抽出后",
+      "volume_mm3": 482.4308218668827,
+      "bbox": [
+        14.5,
+        4.2,
+        14.5
+      ],
+      "bbox_min": [
+        -7.25,
+        -15.2,
+        110.75
+      ],
+      "bbox_max": [
+        7.25,
+        -11.0,
+        125.25
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "CHEST_CORE",
+      "name": "胸核芯",
+      "group": "detail",
+      "color": "#35D6C4",
+      "material": "cyan",
+      "print_note": "轴水平，最凸出",
+      "joint": "最先抽出",
+      "volume_mm3": 133.79414793108202,
+      "bbox": [
+        7.8,
+        2.8,
+        7.8
+      ],
+      "bbox_min": [
+        -3.9,
+        -16.4,
+        114.1
+      ],
+      "bbox_max": [
+        3.9,
+        -13.600000000000001,
+        121.9
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "BACKPACK",
+      "name": "背包",
+      "group": "torso",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "背面朝下",
+      "joint": "凸榫扣入背槽；顶孔接推进器",
+      "volume_mm3": 15330.382595644487,
+      "bbox": [
+        38.0,
+        16.85,
+        28.0
+      ],
+      "bbox_min": [
+        -19.0000001,
+        16.5,
+        110.0
+      ],
+      "bbox_max": [
+        19.0000001,
+        33.35,
+        138.0000001
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "THRUSTER_L",
+      "name": "推进器 L",
+      "group": "torso",
+      "color": "#B8C2CC",
+      "material": "silver",
+      "print_note": "竖直",
+      "joint": "下销入 BACKPACK",
+      "volume_mm3": 2109.9721659672446,
+      "bbox": [
+        10.0,
+        10.0,
+        29.35
+      ],
+      "bbox_min": [
+        -18.0,
+        22.0,
+        134.65
+      ],
+      "bbox_max": [
+        -8.0,
+        32.0,
+        163.99999999999997
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "THRUSTER_R",
+      "name": "推进器 R",
+      "group": "torso",
+      "color": "#B8C2CC",
+      "material": "silver",
+      "print_note": "竖直",
+      "joint": "下销入 BACKPACK",
+      "volume_mm3": 2109.9721659672446,
+      "bbox": [
+        10.0,
+        10.0,
+        29.35
+      ],
+      "bbox_min": [
+        8.0,
+        22.0,
+        134.65
+      ],
+      "bbox_max": [
+        18.0,
+        32.0,
+        163.99999999999997
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "PAULDRON_L",
+      "name": "肩甲 L",
+      "group": "arm",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "罩口朝下打印",
+      "joint": "横销入躯干；罩住 UPPERARM 上端",
+      "volume_mm3": 8165.974726029378,
+      "bbox": [
+        26.6,
+        26.0,
+        22.0
+      ],
+      "bbox_min": [
+        -49.0,
+        -13.0,
+        118.0
+      ],
+      "bbox_max": [
+        -22.4,
+        13.0,
+        140.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "UPPERARM_L",
+      "name": "上臂 L",
+      "group": "arm",
+      "color": "#3E4A5C",
+      "material": "gun",
+      "print_note": "竖直",
+      "joint": "上端套进肩甲内腔；下销入前臂",
+      "volume_mm3": 3304.8790261552253,
+      "bbox": [
+        12.5,
+        12.5,
+        32.0
+      ],
+      "bbox_min": [
+        -44.25,
+        -6.25,
+        100.0
+      ],
+      "bbox_max": [
+        -31.75,
+        6.25,
+        132.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "FOREARM_L",
+      "name": "前臂 L",
+      "group": "arm",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "竖直",
+      "joint": "顶孔接上臂；长销入手",
+      "volume_mm3": 2193.0149317771347,
+      "bbox": [
+        11.5,
+        11.5,
+        27.0
+      ],
+      "bbox_min": [
+        -43.75,
+        -5.75,
+        77.0
+      ],
+      "bbox_max": [
+        -32.25,
+        5.75,
+        104.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "HAND_L",
+      "name": "手 L",
+      "group": "arm",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "平底朝下",
+      "joint": "顶孔接前臂长销",
+      "volume_mm3": 1521.2864294514902,
+      "bbox": [
+        12.0,
+        14.0,
+        12.0
+      ],
+      "bbox_min": [
+        -44.0000001,
+        -7.0,
+        69.9
+      ],
+      "bbox_max": [
+        -31.9999999,
+        7.0,
+        81.9000001
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "PAULDRON_R",
+      "name": "肩甲 R",
+      "group": "arm",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "罩口朝下打印",
+      "joint": "横销入躯干；罩住 UPPERARM 上端",
+      "volume_mm3": 8165.974726029379,
+      "bbox": [
+        26.6,
+        26.0,
+        22.0
+      ],
+      "bbox_min": [
+        22.4,
+        -13.0,
+        118.0
+      ],
+      "bbox_max": [
+        49.0,
+        13.0,
+        140.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "UPPERARM_R",
+      "name": "上臂 R",
+      "group": "arm",
+      "color": "#3E4A5C",
+      "material": "gun",
+      "print_note": "竖直",
+      "joint": "上端套进肩甲内腔；下销入前臂",
+      "volume_mm3": 3304.8790261552253,
+      "bbox": [
+        12.5,
+        12.5,
+        32.0
+      ],
+      "bbox_min": [
+        31.75,
+        -6.25,
+        100.0
+      ],
+      "bbox_max": [
+        44.25,
+        6.25,
+        132.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "FOREARM_R",
+      "name": "前臂 R",
+      "group": "arm",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "竖直",
+      "joint": "顶孔接上臂；长销入手",
+      "volume_mm3": 2193.0149317771347,
+      "bbox": [
+        11.5,
+        11.5,
+        27.0
+      ],
+      "bbox_min": [
+        32.25,
+        -5.75,
+        77.0
+      ],
+      "bbox_max": [
+        43.75,
+        5.75,
+        104.0
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "HAND_R",
+      "name": "手 R",
+      "group": "arm",
+      "color": "#1E2A38",
+      "material": "navy",
+      "print_note": "平底朝下",
+      "joint": "顶孔接前臂长销",
+      "volume_mm3": 1521.2864294514902,
+      "bbox": [
+        12.0,
+        14.0,
+        12.0
+      ],
+      "bbox_min": [
+        31.9999999,
+        -7.0,
+        69.9
+      ],
+      "bbox_max": [
+        44.0000001,
+        7.0,
+        81.9000001
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "NECK",
+      "name": "颈环",
+      "group": "head",
+      "color": "#3E4A5C",
+      "material": "gun",
+      "print_note": "平放，环轴竖直",
+      "joint": "套在躯干颈柱外，沿 +Z 抽出",
+      "volume_mm3": 622.9401240950144,
+      "bbox": [
+        18.0,
+        18.0,
+        4.8
+      ],
+      "bbox_min": [
+        -9.0,
+        -9.0,
+        145.5
+      ],
+      "bbox_max": [
+        9.0,
+        9.0,
+        150.3
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "HELM_L",
+      "name": "头盔左",
+      "group": "head",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "侧躺打印",
+      "joint": "沿 +X 合拢；中央 0.15 缝",
+      "volume_mm3": 14245.209176690269,
+      "bbox": [
+        17.92,
+        32.0,
+        30.0
+      ],
+      "bbox_min": [
+        -18.0,
+        -16.0,
+        150.5
+      ],
+      "bbox_max": [
+        -0.07500000000000227,
+        16.0,
+        180.5
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "HELM_R",
+      "name": "头盔右",
+      "group": "head",
+      "color": "#EFF2F6",
+      "material": "white",
+      "print_note": "侧躺打印",
+      "joint": "沿 -X 合拢",
+      "volume_mm3": 14245.20917695857,
+      "bbox": [
+        17.93,
+        32.0,
+        30.0
+      ],
+      "bbox_min": [
+        0.07499999999999929,
+        -16.0,
+        150.5
+      ],
+      "bbox_max": [
+        18.0,
+        16.0,
+        180.5
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "VISOR",
+      "name": "面罩",
+      "group": "head",
+      "color": "#10161F",
+      "material": "black",
+      "print_note": "正面朝下",
+      "joint": "嵌进头盔前脸槽，沿 -Y 抽出",
+      "volume_mm3": 2575.7665775126193,
+      "bbox": [
+        27.6,
+        5.9,
+        17.6
+      ],
+      "bbox_min": [
+        -13.8,
+        -16.5,
+        157.2
+      ],
+      "bbox_max": [
+        13.8,
+        -10.6,
+        174.8
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "EYE_L",
+      "name": "眼 L",
+      "group": "head",
+      "color": "#35D6C4",
+      "material": "cyan",
+      "print_note": "轴水平",
+      "joint": "嵌进面罩沉孔，先于面罩抽出",
+      "volume_mm3": 28.509953331327424,
+      "bbox": [
+        5.5,
+        1.2,
+        5.5
+      ],
+      "bbox_min": [
+        -9.25,
+        -17.1,
+        163.25
+      ],
+      "bbox_max": [
+        -3.75,
+        -15.899999999999999,
+        168.75
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "EYE_R",
+      "name": "眼 R",
+      "group": "head",
+      "color": "#35D6C4",
+      "material": "cyan",
+      "print_note": "轴水平",
+      "joint": "嵌进面罩沉孔，先于面罩抽出",
+      "volume_mm3": 28.509953331327427,
+      "bbox": [
+        5.5,
+        1.2,
+        5.5
+      ],
+      "bbox_min": [
+        3.75,
+        -17.1,
+        163.25
+      ],
+      "bbox_max": [
+        9.25,
+        -15.899999999999999,
+        168.75
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "ANT_ROD",
+      "name": "天线杆",
+      "group": "head",
+      "color": "#3E4A5C",
+      "material": "gun",
+      "print_note": "竖直",
+      "joint": "下端插头顶孔",
+      "volume_mm3": 248.68376206918788,
+      "bbox": [
+        5.0,
+        5.0,
+        15.05
+      ],
+      "bbox_min": [
+        -2.5,
+        0.5,
+        177.6
+      ],
+      "bbox_max": [
+        2.5,
+        5.5,
+        192.65
+      ],
+      "n_solids": 1,
+      "valid": true
+    },
+    {
+      "pid": "ANT_TIP",
+      "name": "天线球",
+      "group": "head",
+      "color": "#35D6C4",
+      "material": "cyan",
+      "print_note": "球面朝上",
+      "joint": "销插天线杆顶孔",
+      "volume_mm3": 404.8702030291954,
+      "bbox": [
+        9.0,
+        9.0,
+        12.15
+      ],
+      "bbox_min": [
+        -4.5,
+        -1.5,
+        189.5
+      ],
+      "bbox_max": [
+        4.5,
+        7.5,
+        201.65
+      ],
+      "n_solids": 1,
+      "valid": true
+    }
+  ],
+  "colors": {
+    "#1E2A38": {
+      "parts": [
+        "BASE",
+        "FOOT_L",
+        "FOOT_R",
+        "HIP",
+        "BACKPACK",
+        "HAND_L",
+        "HAND_R"
+      ],
+      "count": 7
+    },
+    "#E4572E": {
+      "parts": [
+        "ANKLE_L",
+        "KNEE_L",
+        "ANKLE_R",
+        "KNEE_R",
+        "CHEST_MID"
+      ],
+      "count": 5
+    },
+    "#EFF2F6": {
+      "parts": [
+        "SHIN_L",
+        "THIGH_L",
+        "SHIN_R",
+        "THIGH_R",
+        "TORSO_BACK",
+        "TORSO_FRONT",
+        "PAULDRON_L",
+        "FOREARM_L",
+        "PAULDRON_R",
+        "FOREARM_R",
+        "HELM_L",
+        "HELM_R"
+      ],
+      "count": 12
+    },
+    "#F3B23C": {
+      "parts": [
+        "WAIST",
+        "CHEST_RING"
+      ],
+      "count": 2
+    },
+    "#35D6C4": {
+      "parts": [
+        "CHEST_CORE",
+        "EYE_L",
+        "EYE_R",
+        "ANT_TIP"
+      ],
+      "count": 4
+    },
+    "#B8C2CC": {
+      "parts": [
+        "THRUSTER_L",
+        "THRUSTER_R"
+      ],
+      "count": 2
+    },
+    "#3E4A5C": {
+      "parts": [
+        "UPPERARM_L",
+        "UPPERARM_R",
+        "NECK",
+        "ANT_ROD"
+      ],
+      "count": 4
+    },
+    "#10161F": {
+      "parts": [
+        "VISOR"
+      ],
+      "count": 1
+    }
+  },
+  "stats": {
+    "n_parts": 37,
+    "n_colors": 8,
+    "total_volume_cm3": 238.52,
+    "assembly_bbox": [
+      98.0,
+      78.0,
+      201.65
+    ]
+  },
+  "separability": {
+    "ok": true,
+    "n_batches": 9,
+    "batches": [
+      [
+        [
+          "BASE",
+          "-Z"
+        ],
+        [
+          "CHEST_RING",
+          "-Y"
+        ],
+        [
+          "CHEST_MID",
+          "-Y"
+        ],
+        [
+          "CHEST_CORE",
+          "-Y"
+        ],
+        [
+          "THRUSTER_L",
+          "+Z"
+        ],
+        [
+          "THRUSTER_R",
+          "+Z"
+        ],
+        [
+          "HELM_L",
+          "-X"
+        ],
+        [
+          "HELM_R",
+          "+X"
+        ],
+        [
+          "EYE_L",
+          "-Y"
+        ],
+        [
+          "EYE_R",
+          "-Y"
+        ],
+        [
+          "ANT_TIP",
+          "+Z"
+        ]
+      ],
+      [
+        [
+          "FOOT_L",
+          "-Z"
+        ],
+        [
+          "FOOT_R",
+          "-Z"
+        ],
+        [
+          "BACKPACK",
+          "+Y"
+        ],
+        [
+          "NECK",
+          "+Z"
+        ],
+        [
+          "VISOR",
+          "-Y"
+        ],
+        [
+          "ANT_ROD",
+          "+Z"
+        ]
+      ],
+      [
+        [
+          "ANKLE_L",
+          "-Z"
+        ],
+        [
+          "ANKLE_R",
+          "-Z"
+        ]
+      ],
+      [
+        [
+          "SHIN_L",
+          "-Z"
+        ],
+        [
+          "SHIN_R",
+          "-Z"
+        ]
+      ],
+      [
+        [
+          "KNEE_L",
+          "-Z"
+        ],
+        [
+          "KNEE_R",
+          "-Z"
+        ]
+      ],
+      [
+        [
+          "THIGH_L",
+          "-Z"
+        ],
+        [
+          "THIGH_R",
+          "-Z"
+        ],
+        [
+          "HAND_L",
+          "-Z"
+        ],
+        [
+          "HAND_R",
+          "-Z"
+        ]
+      ],
+      [
+        [
+          "HIP",
+          "-Z"
+        ],
+        [
+          "FOREARM_L",
+          "-Z"
+        ],
+        [
+          "FOREARM_R",
+          "-Z"
+        ]
+      ],
+      [
+        [
+          "WAIST",
+          "-Z"
+        ],
+        [
+          "UPPERARM_L",
+          "-Z"
+        ],
+        [
+          "UPPERARM_R",
+          "-Z"
+        ]
+      ],
+      [
+        [
+          "TORSO_BACK",
+          "+Y"
+        ],
+        [
+          "TORSO_FRONT",
+          "-Y"
+        ],
+        [
+          "PAULDRON_L",
+          "-X"
+        ],
+        [
+          "PAULDRON_R",
+          "+X"
+        ]
+      ]
+    ],
+    "locked": [],
+    "free_dirs": {
+      "BASE": [
+        "-Z"
+      ],
+      "CHEST_RING": [
+        "-Y"
+      ],
+      "CHEST_MID": [
+        "-Y"
+      ],
+      "CHEST_CORE": [
+        "-Y"
+      ],
+      "THRUSTER_L": [
+        "+Z"
+      ],
+      "THRUSTER_R": [
+        "+Z"
+      ],
+      "HELM_L": [
+        "-X"
+      ],
+      "HELM_R": [
+        "+X"
+      ],
+      "EYE_L": [
+        "-Y"
+      ],
+      "EYE_R": [
+        "-Y"
+      ],
+      "ANT_TIP": [
+        "+Z"
+      ],
+      "FOOT_L": [
+        "-Z"
+      ],
+      "FOOT_R": [
+        "-Z"
+      ],
+      "BACKPACK": [
+        "+Y"
+      ],
+      "NECK": [
+        "+Z"
+      ],
+      "VISOR": [
+        "-Y",
+        "+Z",
+        "+Y",
+        "+X",
+        "-X"
+      ],
+      "ANT_ROD": [
+        "+Z",
+        "+Y",
+        "-Y",
+        "+X",
+        "-X"
+      ],
+      "ANKLE_L": [
+        "-Z"
+      ],
+      "ANKLE_R": [
+        "-Z"
+      ],
+      "SHIN_L": [
+        "-Z"
+      ],
+      "SHIN_R": [
+        "-Z"
+      ],
+      "KNEE_L": [
+        "-Z"
+      ],
+      "KNEE_R": [
+        "-Z"
+      ],
+      "THIGH_L": [
+        "-Z"
+      ],
+      "THIGH_R": [
+        "-Z"
+      ],
+      "HAND_L": [
+        "-Z"
+      ],
+      "HAND_R": [
+        "-Z"
+      ],
+      "HIP": [
+        "-Z"
+      ],
+      "FOREARM_L": [
+        "-Z"
+      ],
+      "FOREARM_R": [
+        "-Z"
+      ],
+      "WAIST": [
+        "-Z"
+      ],
+      "UPPERARM_L": [
+        "-Z"
+      ],
+      "UPPERARM_R": [
+        "-Z"
+      ],
+      "TORSO_BACK": [
+        "+Y"
+      ],
+      "TORSO_FRONT": [
+        "-Y",
+        "-Z"
+      ],
+      "PAULDRON_L": [
+        "-X",
+        "-Y"
+      ],
+      "PAULDRON_R": [
+        "+X",
+        "-Y"
+      ]
+    }
+  }
+}

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太空小孩手办 · 3D 检视台</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #eef0f4; color: #1f2328;
+  }
+  #stage { position: absolute; inset: 0; }
+  canvas { display: block; }
+
+  .panel {
+    position: absolute;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,.07);
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(15,23,42,.09);
+  }
+
+  /* 顶部标题 */
+  #head { top: 14px; left: 14px; padding: 11px 15px; }
+  #head h1 { margin: 0; font-size: 14px; font-weight: 600; letter-spacing: .2px; }
+  #head .meta { margin-top: 4px; font-size: 11.5px; color: #667085; font-variant-numeric: tabular-nums; }
+  #head .meta b { color: #1f2328; font-weight: 600; }
+
+  /* 右侧工具栏 */
+  #tools { top: 14px; right: 14px; padding: 10px; width: 176px; }
+  .group { margin-bottom: 9px; }
+  .group:last-child { margin-bottom: 0; }
+  .label { font-size: 10.5px; color: #8b95a5; text-transform: uppercase; letter-spacing: .7px; margin: 0 0 5px 3px; }
+  .row { display: flex; gap: 4px; }
+  button {
+    flex: 1; font: inherit; font-size: 12px; cursor: pointer;
+    padding: 6px 4px; border-radius: 7px;
+    border: 1px solid #d9dee7; background: #fff; color: #344054;
+    transition: all .14s ease; white-space: nowrap;
+  }
+  button:hover { background: #f3f6fb; border-color: #c2ccdb; }
+  button.on { background: #1f6feb; border-color: #1f6feb; color: #fff; box-shadow: 0 2px 8px rgba(31,111,235,.28); }
+
+  /* 底部提示 */
+  #hint {
+    bottom: 14px; left: 50%; transform: translateX(-50%);
+    padding: 7px 14px; font-size: 11.5px; color: #5b6572;
+    display: flex; gap: 14px; white-space: nowrap;
+  }
+  #hint span b { color: #1f2328; font-weight: 600; }
+
+  /* 加载 */
+  #loading {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    background: #eef0f4; z-index: 20; transition: opacity .4s ease;
+  }
+  #loading.hide { opacity: 0; pointer-events: none; }
+  .spinner {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 2.5px solid #cfd6e2; border-top-color: #1f6feb;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading .txt { font-size: 12.5px; color: #5b6572; font-variant-numeric: tabular-nums; }
+  #loading .bar { width: 190px; height: 3px; background: #dbe1ea; border-radius: 3px; overflow: hidden; }
+  #loading .bar i { display: block; height: 100%; width: 0; background: #1f6feb; transition: width .2s ease; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<div id="head" class="panel">
+  <h1>太空小孩手办 · 3D 检视台</h1>
+  <div class="meta" id="stats">加载中…</div>
+</div>
+
+<div id="tools" class="panel">
+  <div class="group">
+    <div class="label">显示</div>
+    <div class="row">
+      <button data-mode="pbr" class="on">贴图</button>
+      <button data-mode="clay">灰模</button>
+      <button data-mode="normal">法线</button>
+    </div>
+  </div>
+  <div class="group">
+    <div class="label">叠加</div>
+    <div class="row">
+      <button id="wire">线框</button>
+      <button id="spin" class="on">自转</button>
+    </div>
+  </div>
+  <div class="group">
+    <div class="label">视角</div>
+    <div class="row">
+      <button data-view="front">正</button>
+      <button data-view="side">侧</button>
+      <button data-view="back">背</button>
+    </div>
+    <div class="row" style="margin-top:4px">
+      <button data-view="quarter">45°</button>
+      <button data-view="top">顶</button>
+      <button data-view="bottom">底</button>
+    </div>
+  </div>
+  <div class="group">
+    <div class="label">动作</div>
+    <div class="row">
+      <button id="reset">重置</button>
+      <button id="shot">截图</button>
+    </div>
+  </div>
+</div>
+
+<div id="hint" class="panel">
+  <span><b>左键拖动</b> 旋转</span>
+  <span><b>滚轮</b> 缩放</span>
+  <span><b>右键拖动</b> 平移</span>
+  <span><b>双击</b> 复位</span>
+</div>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div class="txt" id="ltxt">正在加载模型…</div>
+  <div class="bar"><i id="lbar"></i></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/": "./vendor/addons/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const QS = new URLSearchParams(location.search);
+const MODEL_URL = QS.get('m') || '../04-分件结构分析/parts_struct/parts_preview.glb';
+window.__marks = { scriptStart: performance.now().toFixed(0) };
+const mark = (n) => { window.__marks[n] = performance.now().toFixed(0); };
+
+mark('dom-ready');
+const stage = document.getElementById('stage');
+const statsEl = document.getElementById('stats');
+const loadingEl = document.getElementById('loading');
+const ltxt = document.getElementById('ltxt');
+const lbar = document.getElementById('lbar');
+
+// ---------- 渲染器 ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.appendChild(renderer.domElement);
+mark('renderer-ready');
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xeef0f4);
+
+const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.01, 200);
+camera.position.set(0, 1.1, 2.6);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.075;
+controls.minDistance = 0.35;
+controls.maxDistance = 12;
+controls.target.set(0, 0.55, 0);
+
+// ---------- 环境与灯光 ----------
+// 注意：PMREM 烘焙在低端 GPU / 软件渲染下很慢，放到模型加载完成后再做，
+// 期间先用纯灯光渲染，保证加载不被阻塞。
+const pmrem = new THREE.PMREMGenerator(renderer);
+mark('before-env');
+let envReady = false;
+function ensureEnvironment() {
+  if (envReady) return;
+  envReady = true;
+  setTimeout(() => {
+    try {
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    } catch (e) { console.warn('env bake failed', e); }
+  }, 60);
+}
+
+const key = new THREE.DirectionalLight(0xffffff, 2.1);
+key.position.set(2.2, 4.2, 2.6);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.near = 0.5;
+key.shadow.camera.far = 12;
+const sc = 1.6;
+Object.assign(key.shadow.camera, { left: -sc, right: sc, top: sc, bottom: -sc });
+key.shadow.bias = -0.0008;
+key.shadow.radius = 3;
+scene.add(key);
+
+const fill = new THREE.DirectionalLight(0xdce6ff, 0.85);
+fill.position.set(-2.6, 1.8, -1.8);
+scene.add(fill);
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0xbfc7d4, 0.55));
+
+// ---------- 地面 ----------
+const groundMat = new THREE.ShadowMaterial({ opacity: 0.16 });
+const ground = new THREE.Mesh(new THREE.CircleGeometry(2.4, 64), groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const ring = new THREE.Mesh(
+  new THREE.RingGeometry(0.86, 0.875, 96),
+  new THREE.MeshBasicMaterial({ color: 0xc3ccda, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
+);
+ring.rotation.x = -Math.PI / 2;
+ring.position.y = 0.001;
+scene.add(ring);
+
+// ---------- 状态 ----------
+let model = null;
+let materials = [];       // 原始材质 [{mat, ref}]
+let mode = 'pbr';
+let wireOn = false;
+let spinning = QS.get('spin') === null ? true : QS.get('spin') !== '0';
+let modelBox = new THREE.Box3();
+let modelSize = new THREE.Vector3();
+let home = { pos: new THREE.Vector3(), target: new THREE.Vector3() };
+
+const clayMat = new THREE.MeshStandardMaterial({
+  color: 0xd8dde6, roughness: 0.62, metalness: 0.0, flatShading: false
+});
+const normalMat = new THREE.MeshNormalMaterial({ flatShading: false });
+
+// ---------- 加载 ----------
+const loader = new GLTFLoader();
+mark('loader-created');
+loader.load(MODEL_URL, (gltf) => {
+  model = gltf.scene;
+
+  let tris = 0, verts = 0;
+  model.traverse((o) => {
+    if (!o.isMesh) return;
+    o.castShadow = true;
+    o.receiveShadow = true;
+    const g = o.geometry;
+    tris += g.index ? g.index.count / 3 : g.attributes.position.count / 3;
+    verts += g.attributes.position.count;
+    const list = Array.isArray(o.material) ? o.material : [o.material];
+    list.forEach((m) => {
+      if (m && !materials.some((x) => x.mat === m)) materials.push({ mat: m });
+    });
+  });
+
+  // 落地 + 居中
+  modelBox.setFromObject(model);
+  modelBox.getSize(modelSize);
+  const center = modelBox.getCenter(new THREE.Vector3());
+  model.position.set(-center.x, -modelBox.min.y, -center.z);
+  scene.add(model);
+
+  // 相机 fit
+  const h = modelSize.y;
+  const dist = h * 2.0;
+  home.target.set(0, h * 0.5, 0);
+  home.pos.set(0, h * 0.58, dist);
+  controls.target.copy(home.target);
+  camera.position.copy(home.pos);
+  camera.near = Math.max(0.005, h * 0.004);
+  camera.far = h * 40;
+  controls.minDistance = h * 0.05;
+  controls.maxDistance = h * 12;
+  camera.updateProjectionMatrix();
+  controls.update();
+
+  // URL 参数特写：tgtf=目标高度（模型高度比例），camf=相机偏移（模型高度倍数）
+  const tgtf = QS.get('tgtf'), camf = QS.get('camf');
+  if (tgtf && camf) {
+    const t = new THREE.Vector3(0, h * parseFloat(tgtf), 0);
+    const [cx, cy, cz] = camf.split(',').map(Number);
+    controls.target.copy(t);
+    camera.position.set(t.x + cx * h, t.y + cy * h, t.z + cz * h);
+    controls.update();
+  }
+
+  ring.scale.setScalar(Math.max(modelSize.x, modelSize.z) * 0.78);
+
+  const mm = new THREE.Vector2();
+  statsEl.innerHTML =
+    `<b>${Math.round(tris).toLocaleString()}</b> 三角面 · <b>${Math.round(verts).toLocaleString()}</b> 顶点` +
+    `<br>尺寸 ${(modelSize.x / modelSize.y * 100).toFixed(0)} × ` +
+    `${(modelSize.z / modelSize.y * 100).toFixed(0)} × <b>100</b> mm（按高度归一）`;
+
+  mark('model-loaded');
+  console.warn('DBG', JSON.stringify({ cam: camera.position.toArray(), tgt: controls.target.toArray(),
+                   scale: model.scale.x, size: modelSize.toArray() }));
+  loadingEl.classList.add('hide');
+  window.__viewerLoaded = true;
+  ensureEnvironment();
+}, (e) => {
+  window.__marks.lastProgress = `${e.loaded}/${e.total || '?'}`;
+  if (e.total) {
+    const p = Math.min(100, (e.loaded / e.total) * 100);
+    lbar.style.width = p.toFixed(0) + '%';
+    ltxt.textContent = `正在加载模型… ${(e.loaded / 1e6).toFixed(1)} / ${(e.total / 1e6).toFixed(1)} MB`;
+  } else {
+    ltxt.textContent = `正在加载模型… ${(e.loaded / 1e6).toFixed(1)} MB`;
+  }
+}, (err) => {
+  ltxt.textContent = '模型加载失败：' + (err && err.message ? err.message : err);
+  console.error(err);
+  window.__viewerLoaded = 'error';
+});
+
+// ---------- 材质模式 ----------
+function applyMode(next) {
+  mode = next;
+  if (!model) return;
+  model.traverse((o) => {
+    if (!o.isMesh) return;
+    const mats = Array.isArray(o.material) ? o.material : [o.material];
+    o.material = mats.map((m) => {
+      let target;
+      if (mode === 'pbr') {
+        const found = materials.find((x) => x.mat === m || x.mat.name === m.name);
+        target = (found && found.mat) || m;
+      } else if (mode === 'clay') {
+        target = clayMat;
+      } else {
+        target = normalMat;
+      }
+      if (wireOn && target !== normalMat) {
+        if (target === clayMat) return clayMat.clone();
+        return target.clone();
+      }
+      return target;
+    });
+    if (!Array.isArray(o.material)) o.material = o.material[0];
+    const list = Array.isArray(o.material) ? o.material : [o.material];
+    list.forEach((m) => { if (m) m.wireframe = wireOn && m !== normalMat; });
+  });
+  document.querySelectorAll('[data-mode]').forEach((b) => b.classList.toggle('on', b.dataset.mode === mode));
+}
+
+document.querySelectorAll('[data-mode]').forEach((b) => {
+  b.addEventListener('click', () => applyMode(b.dataset.mode));
+});
+
+document.getElementById('wire').addEventListener('click', (e) => {
+  wireOn = !wireOn;
+  e.currentTarget.classList.toggle('on', wireOn);
+  applyMode(mode);
+});
+
+document.getElementById('spin').addEventListener('click', (e) => {
+  spinning = !spinning;
+  e.currentTarget.classList.toggle('on', spinning);
+});
+
+// ---------- 视角 ----------
+function setView(name) {
+  if (!model) return;
+  const h = modelSize.y, d = h * 2.0, t = new THREE.Vector3(0, h * 0.5, 0);
+  const map = {
+    front: [0, h * 0.58, d],
+    side: [d, h * 0.58, 0],
+    back: [0, h * 0.58, -d],
+    quarter: [d * 0.72, h * 0.62, d * 0.72],
+    top: [0.001, d * 1.02, 0.001],
+    bottom: [0.001, -d * 0.72, 0.001],
+  }[name];
+  if (!map) return;
+  home.pos.set(...map);
+  home.target.copy(t);
+  controls.target.copy(t);
+  camera.position.copy(home.pos);
+  controls.update();
+}
+
+document.querySelectorAll('[data-view]').forEach((b) => {
+  b.addEventListener('click', () => setView(b.dataset.view));
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  controls.target.copy(home.target);
+  camera.position.copy(home.pos);
+  controls.update();
+});
+
+document.getElementById('shot').addEventListener('click', () => {
+  renderer.render(scene, camera);
+  const a = document.createElement('a');
+  a.download = `astronaut_check_${Date.now()}.png`;
+  a.href = renderer.domElement.toDataURL('image/png');
+  a.click();
+});
+
+renderer.domElement.addEventListener('dblclick', () => {
+  controls.target.copy(home.target);
+  camera.position.copy(home.pos);
+  controls.update();
+});
+
+// ---------- 循环 ----------
+const clock = new THREE.Clock();
+function tick() {
+  requestAnimationFrame(tick);
+  const dt = clock.getDelta();
+  if (spinning && model && !controls._dragging) {
+    model.rotation.y += dt * 0.32;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+}
+tick();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// 拖动时暂停自转，避免手感打架
+renderer.domElement.addEventListener('pointerdown', () => { controls._dragging = true; });
+addEventListener('pointerup', () => { controls._dragging = false; });
+</script>
+</body>
+</html>

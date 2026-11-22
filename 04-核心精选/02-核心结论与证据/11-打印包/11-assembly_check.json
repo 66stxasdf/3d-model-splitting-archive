@@ -1,0 +1,830 @@
+{
+  "src": "D:\\workbuddy产物\\04-分件结构分析\\parts_struct",
+  "wall_mm": 1.2,
+  "n_parts": 14,
+  "total_height_mm": 100.01,
+  "total_volume_cm3": 23.078,
+  "parts": {
+    "00_helmet": {
+      "cn": "头盔",
+      "rgb": [
+        0.8745098039215686,
+        0.8980392156862745,
+        0.9333333333333333
+      ],
+      "down_area_frac": 0.0455,
+      "down_area_mm2": 451.6,
+      "min_extent_mm": 37.85,
+      "extents_mm": [
+        44.1,
+        37.8,
+        38.7
+      ],
+      "volume_cm3": 4.977,
+      "shells": 2,
+      "watertight": true,
+      "faces": 29648
+    },
+    "01_hair": {
+      "cn": "头发",
+      "rgb": [
+        0.9686274509803922,
+        0.7019607843137254,
+        0.16862745098039217
+      ],
+      "down_area_frac": 0.0337,
+      "down_area_mm2": 40.5,
+      "min_extent_mm": 13.95,
+      "extents_mm": [
+        34.7,
+        13.9,
+        16.3
+      ],
+      "volume_cm3": 0.381,
+      "shells": 1,
+      "watertight": true,
+      "faces": 2928
+    },
+    "02_face": {
+      "cn": "脸",
+      "rgb": [
+        0.9568627450980393,
+        0.6627450980392157,
+        0.5333333333333333
+      ],
+      "down_area_frac": 0.0284,
+      "down_area_mm2": 78.6,
+      "min_extent_mm": 13.78,
+      "extents_mm": [
+        31.6,
+        13.8,
+        24.8
+      ],
+      "volume_cm3": 1.096,
+      "shells": 1,
+      "watertight": true,
+      "faces": 11276
+    },
+    "03_eye_L": {
+      "cn": "左眼",
+      "rgb": [
+        0.4980392156862745,
+        0.30980392156862746,
+        0.788235294117647
+      ],
+      "down_area_frac": 0.0378,
+      "down_area_mm2": 4.1,
+      "min_extent_mm": 3.64,
+      "extents_mm": [
+        6.6,
+        3.6,
+        7.5
+      ],
+      "volume_cm3": 0.035,
+      "shells": 1,
+      "watertight": true,
+      "faces": 332
+    },
+    "04_eye_R": {
+      "cn": "右眼",
+      "rgb": [
+        0.4980392156862745,
+        0.30980392156862746,
+        0.788235294117647
+      ],
+      "down_area_frac": 0.013,
+      "down_area_mm2": 2.0,
+      "min_extent_mm": 3.14,
+      "extents_mm": [
+        7.7,
+        3.1,
+        8.4
+      ],
+      "volume_cm3": 0.039,
+      "shells": 1,
+      "watertight": true,
+      "faces": 488
+    },
+    "05_torso": {
+      "cn": "躯干",
+      "rgb": [
+        0.8117647058823529,
+        0.8392156862745098,
+        0.8784313725490196
+      ],
+      "down_area_frac": 0.0832,
+      "down_area_mm2": 1495.6,
+      "min_extent_mm": 34.78,
+      "extents_mm": [
+        34.8,
+        42.5,
+        37.4
+      ],
+      "volume_cm3": 7.888,
+      "shells": 1,
+      "watertight": true,
+      "faces": 59280
+    },
+    "06_arm_L": {
+      "cn": "左臂",
+      "rgb": [
+        0.5333333333333333,
+        0.7058823529411765,
+        0.8705882352941177
+      ],
+      "down_area_frac": 0.0349,
+      "down_area_mm2": 224.3,
+      "min_extent_mm": 27.8,
+      "extents_mm": [
+        29.2,
+        40.6,
+        27.8
+      ],
+      "volume_cm3": 2.713,
+      "shells": 2,
+      "watertight": true,
+      "faces": 26660
+    },
+    "07_arm_R": {
+      "cn": "右臂",
+      "rgb": [
+        0.8705882352941177,
+        0.615686274509804,
+        0.48627450980392156
+      ],
+      "down_area_frac": 0.0372,
+      "down_area_mm2": 58.2,
+      "min_extent_mm": 12.27,
+      "extents_mm": [
+        12.3,
+        30.8,
+        24.3
+      ],
+      "volume_cm3": 0.611,
+      "shells": 2,
+      "watertight": true,
+      "faces": 6648
+    },
+    "08_leg_L": {
+      "cn": "左腿",
+      "rgb": [
+        0.6235294117647059,
+        0.8392156862745098,
+        0.6588235294117647
+      ],
+      "down_area_frac": 0.0287,
+      "down_area_mm2": 49.8,
+      "min_extent_mm": 15.91,
+      "extents_mm": [
+        32.5,
+        16.8,
+        15.9
+      ],
+      "volume_cm3": 0.803,
+      "shells": 2,
+      "watertight": true,
+      "faces": 7364
+    },
+    "09_leg_R": {
+      "cn": "右腿",
+      "rgb": [
+        0.9098039215686274,
+        0.8509803921568627,
+        0.5411764705882353
+      ],
+      "down_area_frac": 0.0249,
+      "down_area_mm2": 28.7,
+      "min_extent_mm": 13.14,
+      "extents_mm": [
+        17.0,
+        16.7,
+        13.1
+      ],
+      "volume_cm3": 0.559,
+      "shells": 1,
+      "watertight": true,
+      "faces": 5056
+    },
+    "10_boot_L": {
+      "cn": "左靴",
+      "rgb": [
+        0.6588235294117647,
+        0.43529411764705883,
+        0.8392156862745098
+      ],
+      "down_area_frac": 0.1306,
+      "down_area_mm2": 358.9,
+      "min_extent_mm": 17.0,
+      "extents_mm": [
+        18.2,
+        25.9,
+        17.0
+      ],
+      "volume_cm3": 1.364,
+      "shells": 1,
+      "watertight": true,
+      "faces": 10952
+    },
+    "11_boot_R": {
+      "cn": "右靴",
+      "rgb": [
+        0.43529411764705883,
+        0.5607843137254902,
+        0.8392156862745098
+      ],
+      "down_area_frac": 0.1309,
+      "down_area_mm2": 361.1,
+      "min_extent_mm": 17.14,
+      "extents_mm": [
+        18.8,
+        25.9,
+        17.1
+      ],
+      "volume_cm3": 1.373,
+      "shells": 1,
+      "watertight": true,
+      "faces": 9652
+    },
+    "12_weapon": {
+      "cn": "武器",
+      "rgb": [
+        0.35294117647058826,
+        0.41568627450980394,
+        0.5411764705882353
+      ],
+      "down_area_frac": 0.0729,
+      "down_area_mm2": 238.5,
+      "min_extent_mm": 14.81,
+      "extents_mm": [
+        48.8,
+        14.8,
+        22.2
+      ],
+      "volume_cm3": 1.167,
+      "shells": 2,
+      "watertight": true,
+      "faces": 16360
+    },
+    "13_backpack": {
+      "cn": "背包",
+      "rgb": [
+        0.8784313725490196,
+        0.5450980392156862,
+        0.6901960784313725
+      ],
+      "down_area_frac": 0.0295,
+      "down_area_mm2": 10.7,
+      "min_extent_mm": 12.44,
+      "extents_mm": [
+        12.4,
+        15.9,
+        20.1
+      ],
+      "volume_cm3": 0.072,
+      "shells": 2,
+      "watertight": true,
+      "faces": 1808
+    }
+  },
+  "wall_check": {
+    "00_helmet": {
+      "orig_vertices": 7410,
+      "stl_vertices": 14820,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.194,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 14453,
+      "stl_faces": 29648,
+      "face_ratio": 2.051
+    },
+    "01_hair": {
+      "orig_vertices": 733,
+      "stl_vertices": 1466,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.1529,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 1186,
+      "stl_faces": 2928,
+      "face_ratio": 2.469
+    },
+    "02_face": {
+      "orig_vertices": 2816,
+      "stl_vertices": 5632,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.1809,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 5252,
+      "stl_faces": 11276,
+      "face_ratio": 2.147
+    },
+    "03_eye_L": {
+      "orig_vertices": 84,
+      "stl_vertices": 168,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.1988,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 122,
+      "stl_faces": 332,
+      "face_ratio": 2.721
+    },
+    "04_eye_R": {
+      "orig_vertices": 123,
+      "stl_vertices": 246,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.2,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 180,
+      "stl_faces": 488,
+      "face_ratio": 2.711
+    },
+    "05_torso": {
+      "orig_vertices": 14734,
+      "stl_vertices": 29466,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.097,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 28500,
+      "stl_faces": 59280,
+      "face_ratio": 2.08
+    },
+    "06_arm_L": {
+      "orig_vertices": 6641,
+      "stl_vertices": 13282,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.134,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 12706,
+      "stl_faces": 26660,
+      "face_ratio": 2.098
+    },
+    "07_arm_R": {
+      "orig_vertices": 1664,
+      "stl_vertices": 3328,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.1805,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 3026,
+      "stl_faces": 6648,
+      "face_ratio": 2.197
+    },
+    "08_leg_L": {
+      "orig_vertices": 1841,
+      "stl_vertices": 3682,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.2,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 3374,
+      "stl_faces": 7364,
+      "face_ratio": 2.183
+    },
+    "09_leg_R": {
+      "orig_vertices": 1264,
+      "stl_vertices": 2528,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.2,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 2376,
+      "stl_faces": 5056,
+      "face_ratio": 2.128
+    },
+    "10_boot_L": {
+      "orig_vertices": 2739,
+      "stl_vertices": 5478,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.1931,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 5390,
+      "stl_faces": 10952,
+      "face_ratio": 2.032
+    },
+    "11_boot_R": {
+      "orig_vertices": 2414,
+      "stl_vertices": 4828,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 1.196,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 4746,
+      "stl_faces": 9652,
+      "face_ratio": 2.034
+    },
+    "12_weapon": {
+      "orig_vertices": 4093,
+      "stl_vertices": 8176,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 0.9702,
+      "offset_p90_mm": 1.2,
+      "orig_faces": 7913,
+      "stl_faces": 16360,
+      "face_ratio": 2.067
+    },
+    "13_backpack": {
+      "orig_vertices": 452,
+      "stl_vertices": 904,
+      "frac_on_original": 0.5,
+      "offset_median_mm": 0.6746,
+      "offset_p90_mm": 0.9392,
+      "orig_faces": 776,
+      "stl_faces": 1808,
+      "face_ratio": 2.33
+    }
+  },
+  "pairs": [
+    {
+      "a": "00_helmet",
+      "b": "01_hair",
+      "shared_vertices": 230,
+      "touching": true,
+      "shared_frac_a": 0.0155,
+      "seam_faces_a": 694,
+      "seam_faces_b": 660,
+      "gap_p10_mm": 0.0209,
+      "gap_median_mm": 0.1395,
+      "gap_p90_mm": 0.6263,
+      "intrusion_a_into_b": 0.1225,
+      "intrusion_b_into_a": 0.1727
+    },
+    {
+      "a": "00_helmet",
+      "b": "02_face",
+      "shared_vertices": 284,
+      "touching": true,
+      "shared_frac_a": 0.0192,
+      "seam_faces_a": 812,
+      "seam_faces_b": 822,
+      "gap_p10_mm": 0.0117,
+      "gap_median_mm": 0.1349,
+      "gap_p90_mm": 0.639,
+      "intrusion_a_into_b": 0.0874,
+      "intrusion_b_into_a": 0.073
+    },
+    {
+      "a": "00_helmet",
+      "b": "03_eye_L",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "00_helmet",
+      "b": "04_eye_R",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "00_helmet",
+      "b": "05_torso",
+      "shared_vertices": 240,
+      "touching": true,
+      "shared_frac_a": 0.0162,
+      "seam_faces_a": 720,
+      "seam_faces_b": 698,
+      "gap_p10_mm": 0.0167,
+      "gap_median_mm": 0.1453,
+      "gap_p90_mm": 0.6236,
+      "intrusion_a_into_b": 0.0764,
+      "intrusion_b_into_a": 0.086
+    },
+    {
+      "a": "00_helmet",
+      "b": "06_arm_L",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "01_hair",
+      "b": "02_face",
+      "shared_vertices": 278,
+      "touching": true,
+      "shared_frac_a": 0.1896,
+      "seam_faces_a": 776,
+      "seam_faces_b": 838,
+      "gap_p10_mm": 0.0115,
+      "gap_median_mm": 0.1018,
+      "gap_p90_mm": 0.4342,
+      "intrusion_a_into_b": 0.2268,
+      "intrusion_b_into_a": 0.1683
+    },
+    {
+      "a": "01_hair",
+      "b": "03_eye_L",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "01_hair",
+      "b": "04_eye_R",
+      "shared_vertices": 60,
+      "touching": true,
+      "shared_frac_a": 0.0409,
+      "seam_faces_a": 172,
+      "seam_faces_b": 164,
+      "gap_p10_mm": 0.0161,
+      "gap_median_mm": 0.1187,
+      "gap_p90_mm": 0.547,
+      "intrusion_a_into_b": 0.1453,
+      "intrusion_b_into_a": 0.1585
+    },
+    {
+      "a": "02_face",
+      "b": "03_eye_L",
+      "shared_vertices": 78,
+      "touching": true,
+      "shared_frac_a": 0.0138,
+      "seam_faces_a": 252,
+      "seam_faces_b": 204,
+      "gap_p10_mm": 0.0127,
+      "gap_median_mm": 0.1725,
+      "gap_p90_mm": 0.677,
+      "intrusion_a_into_b": 0.0714,
+      "intrusion_b_into_a": 0.1324
+    },
+    {
+      "a": "02_face",
+      "b": "04_eye_R",
+      "shared_vertices": 62,
+      "touching": true,
+      "shared_frac_a": 0.011,
+      "seam_faces_a": 194,
+      "seam_faces_b": 176,
+      "gap_p10_mm": 0.0115,
+      "gap_median_mm": 0.1556,
+      "gap_p90_mm": 0.6618,
+      "intrusion_a_into_b": 0.0876,
+      "intrusion_b_into_a": 0.142
+    },
+    {
+      "a": "02_face",
+      "b": "05_torso",
+      "shared_vertices": 90,
+      "touching": true,
+      "shared_frac_a": 0.016,
+      "seam_faces_a": 258,
+      "seam_faces_b": 266,
+      "gap_p10_mm": 0.0169,
+      "gap_median_mm": 0.1491,
+      "gap_p90_mm": 0.5977,
+      "intrusion_a_into_b": 0.0271,
+      "intrusion_b_into_a": 0.0188
+    },
+    {
+      "a": "03_eye_L",
+      "b": "04_eye_R",
+      "shared_vertices": 14,
+      "touching": true,
+      "shared_frac_a": 0.0833,
+      "seam_faces_a": 36,
+      "seam_faces_b": 32,
+      "gap_p10_mm": 0.0097,
+      "gap_median_mm": 0.2041,
+      "gap_p90_mm": 0.5197,
+      "intrusion_a_into_b": 0.0,
+      "intrusion_b_into_a": 0.0
+    },
+    {
+      "a": "05_torso",
+      "b": "06_arm_L",
+      "shared_vertices": 930,
+      "touching": true,
+      "shared_frac_a": 0.0316,
+      "seam_faces_a": 2676,
+      "seam_faces_b": 2714,
+      "gap_p10_mm": 0.0133,
+      "gap_median_mm": 0.1134,
+      "gap_p90_mm": 0.6483,
+      "intrusion_a_into_b": 0.1352,
+      "intrusion_b_into_a": 0.1048
+    },
+    {
+      "a": "05_torso",
+      "b": "07_arm_R",
+      "shared_vertices": 420,
+      "touching": true,
+      "shared_frac_a": 0.0143,
+      "seam_faces_a": 1272,
+      "seam_faces_b": 1202,
+      "gap_p10_mm": 0.0117,
+      "gap_median_mm": 0.1169,
+      "gap_p90_mm": 0.4983,
+      "intrusion_a_into_b": 0.1061,
+      "intrusion_b_into_a": 0.1082
+    },
+    {
+      "a": "05_torso",
+      "b": "08_leg_L",
+      "shared_vertices": 300,
+      "touching": true,
+      "shared_frac_a": 0.0102,
+      "seam_faces_a": 848,
+      "seam_faces_b": 854,
+      "gap_p10_mm": 0.0177,
+      "gap_median_mm": 0.1836,
+      "gap_p90_mm": 0.5958,
+      "intrusion_a_into_b": 0.0083,
+      "intrusion_b_into_a": 0.0152
+    },
+    {
+      "a": "05_torso",
+      "b": "09_leg_R",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "05_torso",
+      "b": "12_weapon",
+      "shared_vertices": 316,
+      "touching": true,
+      "shared_frac_a": 0.0107,
+      "seam_faces_a": 922,
+      "seam_faces_b": 892,
+      "gap_p10_mm": 0.0093,
+      "gap_median_mm": 0.0902,
+      "gap_p90_mm": 0.4935,
+      "intrusion_a_into_b": 0.1692,
+      "intrusion_b_into_a": 0.1973
+    },
+    {
+      "a": "05_torso",
+      "b": "13_backpack",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "06_arm_L",
+      "b": "08_leg_L",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "06_arm_L",
+      "b": "12_weapon",
+      "shared_vertices": 66,
+      "touching": true,
+      "shared_frac_a": 0.005,
+      "seam_faces_a": 194,
+      "seam_faces_b": 188,
+      "gap_p10_mm": 0.0216,
+      "gap_median_mm": 0.0739,
+      "gap_p90_mm": 0.358,
+      "intrusion_a_into_b": 0.2113,
+      "intrusion_b_into_a": 0.1543
+    },
+    {
+      "a": "06_arm_L",
+      "b": "13_backpack",
+      "shared_vertices": 256,
+      "touching": true,
+      "shared_frac_a": 0.0193,
+      "seam_faces_a": 712,
+      "seam_faces_b": 708,
+      "gap_p10_mm": 0.0084,
+      "gap_median_mm": 0.0747,
+      "gap_p90_mm": 0.4269,
+      "intrusion_a_into_b": 0.2935,
+      "intrusion_b_into_a": 0.2867
+    },
+    {
+      "a": "07_arm_R",
+      "b": "12_weapon",
+      "shared_vertices": 180,
+      "touching": true,
+      "shared_frac_a": 0.0541,
+      "seam_faces_a": 528,
+      "seam_faces_b": 566,
+      "gap_p10_mm": 0.0127,
+      "gap_median_mm": 0.1148,
+      "gap_p90_mm": 0.6448,
+      "intrusion_a_into_b": 0.1837,
+      "intrusion_b_into_a": 0.0954
+    },
+    {
+      "a": "08_leg_L",
+      "b": "09_leg_R",
+      "shared_vertices": 144,
+      "touching": true,
+      "shared_frac_a": 0.0391,
+      "seam_faces_a": 420,
+      "seam_faces_b": 422,
+      "gap_p10_mm": 0.0141,
+      "gap_median_mm": 0.1477,
+      "gap_p90_mm": 0.5085,
+      "intrusion_a_into_b": 0.0167,
+      "intrusion_b_into_a": 0.0379
+    },
+    {
+      "a": "08_leg_L",
+      "b": "10_boot_L",
+      "shared_vertices": 172,
+      "touching": true,
+      "shared_frac_a": 0.0467,
+      "seam_faces_a": 482,
+      "seam_faces_b": 480,
+      "gap_p10_mm": 0.0115,
+      "gap_median_mm": 0.1141,
+      "gap_p90_mm": 0.4649,
+      "intrusion_a_into_b": 0.0788,
+      "intrusion_b_into_a": 0.0625
+    },
+    {
+      "a": "08_leg_L",
+      "b": "11_boot_R",
+      "shared_vertices": 0,
+      "touching": false
+    },
+    {
+      "a": "09_leg_R",
+      "b": "11_boot_R",
+      "shared_vertices": 160,
+      "touching": true,
+      "shared_frac_a": 0.0633,
+      "seam_faces_a": 446,
+      "seam_faces_b": 452,
+      "gap_p10_mm": 0.0138,
+      "gap_median_mm": 0.1177,
+      "gap_p90_mm": 0.45,
+      "intrusion_a_into_b": 0.0897,
+      "intrusion_b_into_a": 0.0973
+    }
+  ],
+  "neighbors": {
+    "00_helmet": [
+      "01_hair",
+      "02_face",
+      "05_torso"
+    ],
+    "01_hair": [
+      "00_helmet",
+      "02_face",
+      "04_eye_R"
+    ],
+    "02_face": [
+      "00_helmet",
+      "01_hair",
+      "03_eye_L",
+      "04_eye_R",
+      "05_torso"
+    ],
+    "05_torso": [
+      "00_helmet",
+      "02_face",
+      "06_arm_L",
+      "07_arm_R",
+      "08_leg_L",
+      "12_weapon"
+    ],
+    "04_eye_R": [
+      "01_hair",
+      "02_face",
+      "03_eye_L"
+    ],
+    "03_eye_L": [
+      "02_face",
+      "04_eye_R"
+    ],
+    "06_arm_L": [
+      "05_torso",
+      "12_weapon",
+      "13_backpack"
+    ],
+    "07_arm_R": [
+      "05_torso",
+      "12_weapon"
+    ],
+    "08_leg_L": [
+      "05_torso",
+      "09_leg_R",
+      "10_boot_L"
+    ],
+    "12_weapon": [
+      "05_torso",
+      "06_arm_L",
+      "07_arm_R"
+    ],
+    "13_backpack": [
+      "06_arm_L"
+    ],
+    "09_leg_R": [
+      "08_leg_L",
+      "11_boot_R"
+    ],
+    "10_boot_L": [
+      "08_leg_L"
+    ],
+    "11_boot_R": [
+      "09_leg_R"
+    ]
+  },
+  "summary": {
+    "n_candidate_pairs": 27,
+    "n_touch_pairs": 19,
+    "n_zero_gap_pairs": 19,
+    "n_intruding_pairs": 11,
+    "median_seam_gap_mm": 0.1187,
+    "max_intrusion": 0.2935
+  },
+  "verdict": "14 件全部水密、无非流形边，均为沿原始网格法向加厚 1.2mm 的薄壳打印件（面数约为原始标签面的 2 倍，一半顶点与原网格重合）。共 19 对共享分界面顶点；其中 19 对分界面中位间隙 < 0.30mm，11 对存在明显内侵（>10% 的分界面点侵入对方实体）。结论：这些件是从同一张连续表面按标签切开、各自原地加厚得到的，配合面零间隙甚至互相穿插；按 1:1 打印出来会顶死，不是可直接插装的套件。要能装，必须在分件阶段给配合面做单侧 0.15~0.25mm 偏置（或缩一件 / 放另一件），并补定位榫与装配顺序。",
+  "caveats": [
+    "内侵用分界面质心沿内法向偏移 0.15mm 的 contains_points 估计，非精确布尔交体积",
+    "间隙是分界面面片到对方表面的最近距离，不含材料收缩 / 装配顺序 / 弹性卡扣",
+    "体积为实心壳体积估算，未扣打印填充率；STL 未做打印缩放"
+  ],
+  "elapsed_sec": 73.8
+}

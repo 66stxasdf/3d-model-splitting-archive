@@ -1,0 +1,161 @@
+{
+  "source": {
+    "faces": 500000,
+    "vertices": 249936,
+    "watertight": true,
+    "winding": true,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "components": 1,
+    "volume": 56094.136489988974,
+    "area": 18741.83102441562,
+    "bounds_min": [
+      -31.0512,
+      -26.64408,
+      1e-05
+    ],
+    "bounds_max": [
+      31.0512,
+      27.34899,
+      101.18331
+    ]
+  },
+  "part_A": {
+    "faces": 192048,
+    "vertices": 95998,
+    "watertight": true,
+    "winding": true,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "components": 1,
+    "volume": 26451.000425649076,
+    "area": 6475.494578620024,
+    "bounds_min": [
+      -22.9234,
+      -11.38911,
+      64.0
+    ],
+    "bounds_max": [
+      24.6138,
+      27.34899,
+      101.1833
+    ]
+  },
+  "part_B": {
+    "faces": 315980,
+    "vertices": 157954,
+    "watertight": true,
+    "winding": true,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "components": 1,
+    "volume": 29643.136047702763,
+    "area": 13910.338169313158,
+    "bounds_min": [
+      -31.0512,
+      -26.64408,
+      1e-05
+    ],
+    "bounds_max": [
+      31.0512,
+      23.97491,
+      67.06004
+    ]
+  },
+  "volume_sum": 56094.13647335184,
+  "volume_relative_error": 2.9659306590778663e-10,
+  "bbox_union_dev_mm": 7.170867917238866e-06,
+  "interpenetration": {
+    "A_in_B": 0.0033333333333333335,
+    "B_in_A": 0.0013333333333333333
+  },
+  "curved_cap": {
+    "A": {
+      "cap_vertices": 2088,
+      "z_min": 64.0,
+      "z_max": 67.06,
+      "z_span": 3.06,
+      "abs_g_median": 0.00176,
+      "profile": [
+        {
+          "x_mid": -19.4,
+          "n": 24,
+          "z_mean": 65.994
+        },
+        {
+          "x_mid": -11.6,
+          "n": 652,
+          "z_mean": 65.203
+        },
+        {
+          "x_mid": -3.9,
+          "n": 249,
+          "z_mean": 64.143
+        },
+        {
+          "x_mid": 3.9,
+          "n": 233,
+          "z_mean": 64.144
+        },
+        {
+          "x_mid": 11.6,
+          "n": 697,
+          "z_mean": 65.302
+        },
+        {
+          "x_mid": 19.4,
+          "n": 233,
+          "z_mean": 66.52
+        }
+      ]
+    },
+    "B": {
+      "cap_vertices": 2077,
+      "z_min": 63.979,
+      "z_max": 67.06,
+      "z_span": 3.081,
+      "abs_g_median": 0.00175,
+      "profile": [
+        {
+          "x_mid": -11.6,
+          "n": 653,
+          "z_mean": 65.198
+        },
+        {
+          "x_mid": -3.9,
+          "n": 252,
+          "z_mean": 64.142
+        },
+        {
+          "x_mid": 3.9,
+          "n": 233,
+          "z_mean": 64.142
+        },
+        {
+          "x_mid": 11.6,
+          "n": 703,
+          "z_mean": 65.303
+        },
+        {
+          "x_mid": 19.4,
+          "n": 236,
+          "z_mean": 66.528
+        }
+      ]
+    }
+  },
+  "checks": {
+    "源壳单一水密": true,
+    "A 水密零边界": true,
+    "B 水密零边界": true,
+    "A/B 各单一连通块": true,
+    "A/B 无非流形": true,
+    "体积守恒 < 0.1%": true,
+    "bbox 还原 < 0.01mm": true,
+    "互不嵌入 < 1%": true,
+    "切面顶点贴合抛物面": true,
+    "切面确实弯曲（z 跨度 > 3mm）": true
+  },
+  "all_ok": true,
+  "note": "曲面切割若成功，切面 z 应随 x 呈二次变化；平面切割的切面共面。"
+}

@@ -1,0 +1,115 @@
+{
+  "source": {
+    "faces": 500000,
+    "vertices": 249936,
+    "watertight": true,
+    "winding": true,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "unique_edges": 750000,
+    "components": 1,
+    "volume": 56094.136489988974,
+    "area": 18741.83102441562,
+    "bounds_min": [
+      -31.0512,
+      -26.64408,
+      1e-05
+    ],
+    "bounds_max": [
+      31.0512,
+      27.34899,
+      101.18331
+    ],
+    "euler": -64
+  },
+  "part_A": {
+    "faces": 194408,
+    "vertices": 97178,
+    "watertight": true,
+    "winding": true,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "unique_edges": 291612,
+    "components": 1,
+    "volume": 27509.808047129987,
+    "area": 6626.837619944469,
+    "bounds_min": [
+      -22.9234,
+      -11.38911,
+      60.62864
+    ],
+    "bounds_max": [
+      24.6138,
+      27.34899,
+      101.1833
+    ],
+    "euler": -26
+  },
+  "part_B": {
+    "faces": 309530,
+    "vertices": 154729,
+    "watertight": true,
+    "winding": true,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "unique_edges": 464295,
+    "components": 1,
+    "volume": 28583.978920791735,
+    "area": 13599.447939992053,
+    "bounds_min": [
+      -31.0512,
+      -26.64408,
+      1e-05
+    ],
+    "bounds_max": [
+      31.0512,
+      23.97491,
+      66.09835
+    ],
+    "euler": -36
+  },
+  "volume_sum": 56093.786967921726,
+  "volume_relative_error": 6.230991135960362e-06,
+  "area_sum": 20226.28555993652,
+  "bbox_union_dev_mm": 7.170867917238866e-06,
+  "cut_plane": {
+    "n": [
+      0.1478785945021029,
+      0.07886433795412251,
+      0.985856144418211
+    ],
+    "c": [
+      1.5503759398496226,
+      10.345864661654135,
+      62.939974937343365
+    ],
+    "rms_mm": 0.0020285701443585576,
+    "max_dev_mm": 0.005031845185590114,
+    "tilt_deg": 9.64794352448638
+  },
+  "interpenetration": {
+    "A_surface_points_in_B": 0.0025,
+    "B_surface_points_in_A": 0.00175,
+    "sampled_each": 4000
+  },
+  "plane_sidedness": {
+    "A_min_signed_mm": -6.095359970801732e-06,
+    "A_max_signed_mm": 39.87429725380731,
+    "B_min_signed_mm": -68.20931954571965,
+    "B_max_signed_mm": 1.5427071259926688e-06
+  },
+  "checks": {
+    "源壳是单一水密体": true,
+    "A 水密且边界边为 0": true,
+    "B 水密且边界边为 0": true,
+    "A/B 各自单一连通块": true,
+    "A/B 无非流形边": true,
+    "A/B 绕序一致": true,
+    "体积守恒 < 0.1%": true,
+    "bbox 并集还原源壳 < 0.01mm": true,
+    "两件互不嵌入 < 1%": true,
+    "切面共面": true,
+    "切割非水平": true
+  },
+  "all_ok": true
+}

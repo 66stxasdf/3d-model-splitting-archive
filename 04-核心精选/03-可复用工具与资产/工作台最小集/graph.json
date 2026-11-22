@@ -1,0 +1,195 @@
+{
+ "nodes": [
+  {
+   "id": "in",
+   "type": "input",
+   "title": "任务",
+   "x": 60,
+   "y": 80,
+   "params": {
+    "task": "生成一个小游戏"
+   }
+  },
+  {
+   "id": "probe",
+   "type": "tool",
+   "title": "模型特征",
+   "x": 369.314587921366,
+   "y": -20.239349644635666,
+   "params": {
+    "tool": "asset_profile",
+    "args": {
+     "path": "$asset"
+    }
+   }
+  },
+  {
+   "id": "pv1",
+   "type": "tool",
+   "title": "预览·入厂",
+   "x": 700,
+   "y": 80,
+   "params": {
+    "tool": "render_preview",
+    "args": {
+     "path": "$asset",
+     "mode": "solid",
+     "caption": "入厂状态（焊合后）"
+    }
+   }
+  },
+  {
+   "id": "plan",
+   "type": "agent",
+   "title": "规划者·思考推敲",
+   "x": 700,
+   "y": 280,
+   "params": {
+    "model_id": "mock-deep",
+    "sys": "你是拆件规划者。动刀前先想清楚，把推敲过程写在 analysis 里：\n1. 这件东西是什么形状？最长的边是哪一维（就是切面法向的候选）\n2. 从哪里掰开最不显眼？切完两件是不是都还立得住\n3. 有什么风险：薄壁、破洞、纹理会被切开\n然后给 split_plan（axis 切面法向：0=X、1=Y、2=Z；height_ratio 0~1 切面高度占比）\n再把要做的事拆成 subtasks 清单，每条写 title 和 why。\n只回答一个 JSON，例如：\n{\"analysis\": \"这是一个站立的人形，最长边是 Y…\", \n \"split_plan\": {\"axis\": 1, \"height_ratio\": 0.5}, \n \"subtasks\": [{\"id\": \"T1\", \"title\": \"先质检看网格干不干净\", \"tool\": \"mesh_qc\", \"why\": \"有破洞直接切会崩\"}]}",
+    "prompt": "看任务和模型特征，先想，再拆子任务。没有特别要求就沿最长边、从正中间切。"
+   }
+  },
+  {
+   "id": "split",
+   "type": "code",
+   "title": "拆解子任务",
+   "x": 1020,
+   "y": 80,
+   "params": {
+    "fn": "build_subtasks"
+   }
+  },
+  {
+   "id": "assign",
+   "type": "agent",
+   "title": "分派员·结合特征",
+   "x": 1340,
+   "y": 80,
+   "params": {
+    "model_id": "mock-fast",
+    "sys": "你是分派员。上游给了子任务清单和模型特征，你要结合特征把活派下去：\n· 先质检再切：网格不干净就先修，别带着破洞切\n· 切面法向用上游根据特征算出来的 suggested_axis（最长边方向），不要自己另选\n· 每个子任务都要指明交给哪个工具，并写一句 why\n只回答一个 JSON，例如：\n{\"axis\": 1, \"height\": null, \"suggested_axis\": 1, \"assignments\": [{\"id\": \"T1\", \"to\": \"mesh_qc\", \"why\": \"先确认水密\"}], \"why\": \"按最长边 Y 从中间切，头身各成一件\"}",
+    "prompt": "结合模型特征，把子任务分给具体工具，并给出切分参数。"
+   }
+  },
+  {
+   "id": "qc",
+   "type": "tool",
+   "title": "mesh_qc 质检",
+   "x": 1660,
+   "y": 80,
+   "params": {
+    "tool": "mesh_qc",
+    "args": {
+     "path": "$asset"
+    }
+   }
+  },
+  {
+   "id": "sl",
+   "type": "tool",
+   "title": "slice_two 切分",
+   "x": 1660,
+   "y": 280,
+   "params": {
+    "tool": "slice_two",
+    "args": {
+     "path": "$asset",
+     "axis": "$axis",
+     "height": "$height"
+    }
+   }
+  },
+  {
+   "id": "pv2",
+   "type": "tool",
+   "title": "预览·切分",
+   "x": 1980,
+   "y": 80,
+   "params": {
+    "tool": "render_preview",
+    "args": {
+     "path": "$asset",
+     "mode": "split",
+     "axis": "$axis",
+     "height": "$height",
+     "caption": "切分结果：蓝=上半，橙=下半"
+    }
+   }
+  },
+  {
+   "id": "gate",
+   "type": "gate",
+   "title": "代码闸门",
+   "x": 1980,
+   "y": 280,
+   "params": {}
+  },
+  {
+   "id": "out",
+   "type": "output",
+   "title": "结果",
+   "x": 2300,
+   "y": 80,
+   "params": {}
+  }
+ ],
+ "links": [
+  {
+   "from": "in",
+   "to": "probe"
+  },
+  {
+   "from": "in",
+   "to": "plan"
+  },
+  {
+   "from": "probe",
+   "to": "plan"
+  },
+  {
+   "from": "probe",
+   "to": "pv1"
+  },
+  {
+   "from": "plan",
+   "to": "split"
+  },
+  {
+   "from": "probe",
+   "to": "split"
+  },
+  {
+   "from": "split",
+   "to": "assign"
+  },
+  {
+   "from": "probe",
+   "to": "assign"
+  },
+  {
+   "from": "assign",
+   "to": "qc"
+  },
+  {
+   "from": "assign",
+   "to": "sl"
+  },
+  {
+   "from": "sl",
+   "to": "pv2"
+  },
+  {
+   "from": "qc",
+   "to": "gate"
+  },
+  {
+   "from": "sl",
+   "to": "gate"
+  },
+  {
+   "from": "gate",
+   "to": "out"
+  }
+ ]
+}

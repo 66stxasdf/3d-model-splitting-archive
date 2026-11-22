@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Agent 工作台 · 看得见的调度过程</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1f2328; --ink2:#525a63; --ink3:#8a929c;
+  --line:#e3e6ea; --line2:#eef0f3; --accent:#2f6fd0; --accent-bg:#eaf1fc;
+  --ok:#1c7f4b; --ok-bg:#e7f5ec; --bad:#c0392b; --bad-bg:#fdeceb;
+  --warn:#a86800; --warn-bg:#fff4e0; --idle:#e9ecf0; --shadow:0 1px 3px rgba(20,30,50,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:14px/1.62 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1500px;margin:0 auto;padding:20px 22px 60px}
+code,.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:12.5px}
+a{color:var(--accent);text-decoration:none}
+
+/* ---------- header ---------- */
+header{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:16px}
+.brand{flex:1;min-width:340px}
+.brand h1{font-size:23px;margin:0 0 5px;letter-spacing:.3px;font-weight:650}
+.brand p{margin:0;color:var(--ink2);font-size:13.5px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:4px}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink2)}
+.badge.b-on{background:var(--ok-bg);border-color:#b9e0c8;color:var(--ok)}
+.badge.b-off{background:var(--idle);color:var(--ink2)}
+.badge.b-warn{background:var(--warn-bg);border-color:#f0d7a5;color:var(--warn)}
+
+/* ---------- explain ---------- */
+.explain{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+.explain>summary{cursor:pointer;padding:13px 18px;font-weight:600;font-size:14.5px;list-style:none;display:flex;align-items:center;gap:10px}
+.explain>summary::-webkit-details-marker{display:none}
+.explain>summary::before{content:"▸";color:var(--accent);font-size:15px;transition:transform .18s}
+.explain[open]>summary::before{transform:rotate(90deg)}
+.explain>summary .tip{font-weight:400;color:var(--ink3);font-size:12.5px;margin-left:auto}
+.exbody{border-top:1px solid var(--line2);padding:16px 18px 18px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.tcard{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:12px 14px}
+.tcard h4{margin:0 0 6px;font-size:13.5px}
+.tcard p{margin:0;color:var(--ink2);font-size:12.8px;line-height:1.6}
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:var(--accent-bg);border:1px solid #d3e2f7;border-radius:9px;padding:12px 14px;margin-bottom:14px}
+.flow .n{background:#fff;border:1px solid #c6d9f2;border-radius:7px;padding:5px 10px;font-size:12.5px;font-weight:600;color:#254d8c}
+.flow .ar{color:var(--accent);font-weight:700}
+.flow .cap{margin-left:auto;color:var(--ink2);font-size:12.3px}
+.kv{display:grid;grid-template-columns:88px 1fr;gap:5px 12px;font-size:13px}
+.kv dt{color:var(--ink3)}
+.kv dd{margin:0;color:var(--ink2)}
+.note{background:var(--warn-bg);border:1px solid #f0d7a5;border-radius:9px;padding:10px 13px;color:#7a4c00;font-size:12.8px;margin-top:14px}
+
+/* ---------- layout ---------- */
+.grid{display:grid;grid-template-columns:246px minmax(0,1fr) 330px;gap:14px;align-items:start}
+@media(max-width:1180px){.grid{grid-template-columns:220px minmax(0,1fr)}.col3{grid-column:1/-1}}
+@media(max-width:780px){.grid{grid-template-columns:1fr}.col1,.col2,.col3{grid-column:1/-1}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.ph{padding:11px 14px;border-bottom:1px solid var(--line2);font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+.ph .sub{font-weight:400;color:var(--ink3);font-size:11.5px;margin-left:auto}
+.pb{padding:12px 14px}
+
+/* scenes */
+.scenes{max-height:560px;overflow:auto;padding:8px}
+.sc{display:block;width:100%;text-align:left;border:1px solid transparent;background:transparent;border-radius:8px;padding:9px 10px;margin-bottom:3px;cursor:pointer;color:var(--ink);font:inherit;transition:.12s}
+.sc:hover{background:#f3f6fa}
+.sc.on{background:var(--accent-bg);border-color:#c9dcf5}
+.sc .t{font-size:12.8px;font-weight:600;line-height:1.45;display:block}
+.sc .m{font-size:11.5px;color:var(--ink3);display:block;margin-top:2px}
+.sc.on .m{color:#5b7fb5}
+.tag{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:4px;background:var(--idle);color:var(--ink2);margin-right:5px;vertical-align:1px}
+.sc.on .tag{background:#d6e5fa;color:#2f5f9e}
+
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:7px}
+.f{border:1px solid var(--line);background:#fafbfc;border-radius:8px;padding:8px 9px;min-height:52px;transition:.2s}
+.f .n{font-size:12.2px;font-weight:600;line-height:1.35}
+.f .i{font-size:10.5px;color:var(--ink3);margin-top:2px}
+.f .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--idle);margin-right:5px;vertical-align:1px}
+.f.on{background:var(--ok-bg);border-color:#b9e0c8}
+.f.on .dot{background:var(--ok);box-shadow:0 0 0 3px rgba(28,127,75,.12)}
+.f.dom .n::after{content:" ·件";font-size:10px;color:var(--accent);font-weight:400}
+.f .cnt{display:inline-block;margin-top:5px;font-size:10.5px;padding:1px 6px;border-radius:4px;background:#eef3fb;color:#2f5f9e;font-family:"SFMono-Regular",Consolas,monospace}
+.f .cnt.bad{background:var(--warn-bg);color:var(--warn)}
+.f.part{background:var(--warn-bg);border-color:#f0d7a5}
+.f.part .dot{background:var(--warn)}
+.f.hit{animation:pop .45s ease}
+@keyframes pop{0%{transform:scale(.94);box-shadow:0 0 0 4px rgba(28,127,75,.18)}100%{transform:scale(1);box-shadow:none}}
+
+/* action card */
+.act{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:12px;background:#fff}
+.act.pending{border-style:dashed;background:#fafbfc}
+.act .top{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid var(--line2);background:#fbfcfd;flex-wrap:wrap}
+.act .no{background:var(--accent);color:#fff;border-radius:6px;padding:2px 8px;font-size:11.5px;font-weight:700}
+.act .tt{font-weight:650;font-size:14px}
+.act .tool{color:var(--ink3);font-size:11.5px}
+.act .res{margin-left:auto;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:5px}
+.res.OK{background:var(--ok-bg);color:var(--ok)}
+.res.FAIL,.res.REJECT,.res.BLOCKED{background:var(--bad-bg);color:var(--bad)}
+.act .rows{padding:11px 13px}
+.row{display:grid;grid-template-columns:82px 1fr;gap:10px;padding:5px 0;font-size:12.8px;align-items:start}
+.row .k{color:var(--ink3);font-size:11.8px;padding-top:1px}
+.row .v{color:var(--ink2);word-break:break-word}
+.row .v strong{color:var(--ink);font-weight:600}
+.verify{margin-top:8px;border-radius:8px;padding:9px 11px;font-size:12.5px;border:1px solid}
+.verify.ok{background:var(--ok-bg);border-color:#c4e5d0;color:#1a6240}
+.verify.no{background:var(--bad-bg);border-color:#f3c3bf;color:#8f2c22}
+.verify b{font-weight:700}
+.empty{color:var(--ink3);text-align:center;padding:26px 10px;font-size:12.8px}
+
+/* log */
+.log{max-height:430px;overflow:auto;padding:8px 12px 12px}
+.lg{border-left:2px solid var(--line);padding:0 0 10px 11px;position:relative;margin-left:4px}
+.lg::before{content:"";position:absolute;left:-5px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--line);border:2px solid #fff}
+.lg.ok{border-left-color:#b9e0c8}.lg.ok::before{background:var(--ok)}
+.lg.bad{border-left-color:#eeb8b3}.lg.bad::before{background:var(--bad)}
+.lg .h{font-size:12.2px;font-weight:600}
+.lg .h span{color:var(--ink3);font-weight:400;font-size:11px;margin-left:5px}
+.lg .d{font-size:11.6px;color:var(--ink2);margin-top:2px;line-height:1.5}
+.lg .v{font-size:11.4px;color:var(--ok);margin-top:2px}
+.lg .v.no{color:var(--bad)}
+
+/* verdict */
+.verdict{border-radius:10px;padding:12px 14px;border:1px solid var(--line);background:#fafbfc}
+.verdict .big{font-size:18px;font-weight:700;letter-spacing:.5px}
+.verdict .code{font-size:11.5px;color:var(--ink3);margin-top:1px}
+.verdict .why{font-size:12.5px;color:var(--ink2);margin-top:8px;line-height:1.6}
+.verdict.SUCCESS{background:var(--ok-bg);border-color:#b9e0c8}.verdict.SUCCESS .big{color:var(--ok)}
+.verdict.FAILED,.verdict.REJECTED{background:var(--bad-bg);border-color:#f0c0bb}.verdict.FAILED .big,.verdict.REJECTED .big{color:var(--bad)}
+.verdict.UNDECIDABLE,.verdict.SUCCESS_WITH_WARNINGS{background:var(--warn-bg);border-color:#f0d7a5}.verdict.UNDECIDABLE .big,.verdict.SUCCESS_WITH_WARNINGS .big{color:var(--warn)}
+
+/* routes */
+.rtabs{display:flex;gap:8px;margin-bottom:12px}
+.rtab{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 13px;cursor:pointer;font:inherit;font-size:12.5px;color:var(--ink2)}
+.rtab.on{background:var(--accent-bg);border-color:#c9dcf5;color:#254d8c;font-weight:600}
+.chain{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin:6px 0 14px}
+.chain .node{background:#fff;border:1px solid #c9dcf5;border-radius:7px;padding:6px 10px;font-size:12.2px;font-weight:600;color:#254d8c}
+.chain .arw{color:var(--accent)}
+.chain .node.hi{background:var(--accent);color:#fff;border-color:var(--accent)}
+.rtwhy{font-size:12.2px;color:var(--ink2);border-left:3px solid var(--line);padding-left:11px;margin:8px 0}
+
+/* controls */
+.controls{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:11px 14px;margin:0 0 14px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+button.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font:inherit;font-size:12.8px;color:var(--ink);transition:.12s}
+button.btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+button.btn:disabled{opacity:.42;cursor:not-allowed}
+button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.btn.primary:hover:not(:disabled){background:#245fb8;color:#fff}
+.prog{flex:1;min-width:130px;height:7px;background:var(--idle);border-radius:6px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.stepno{font-size:12px;color:var(--ink2);white-space:nowrap}
+.spd{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2)}
+.spd select{border:1px solid var(--line);border-radius:6px;padding:4px 6px;font:inherit;font-size:12px;background:#fff;color:var(--ink)}
+
+/* bridge */
+.bridge{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.bridge .pb{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.cmd{background:#1f2733;color:#d6e2f0;border-radius:8px;padding:9px 12px;font-size:12px;flex:1;min-width:300px;overflow-x:auto;white-space:nowrap}
+.cmd .c{color:#7fd1a0}
+.st{font-size:12.3px;color:var(--ink2)}
+.st b{color:var(--ok)}
+.st.off b{color:var(--ink3)}
+.hintline{font-size:12px;color:var(--ink3);margin-top:8px;line-height:1.6}
+.live{margin-top:10px;padding:10px 12px;background:var(--accent-bg);border:1px solid #d3e2f7;border-radius:8px;font-size:12.5px;color:#254d8c;display:none}
+.live.show{display:block}
+footer{text-align:center;color:var(--ink3);font-size:11.5px;margin-top:22px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <h1>Agent 工作台</h1>
+    <p>把「Agent 在想什么」摊开给你看：每一步为什么选它、谁独立复核、最后凭什么下结论。</p>
+  </div>
+  <div class="badges">
+    <span class="badge b-on" id="modeBadge">真实轨迹回放</span>
+    <span class="badge" id="kernelBadge">内核 0.2.0</span>
+    <span class="badge b-warn" id="stubBadge">—</span>
+    <span class="badge b-off" id="bridgeBadge">未连接真内核</span>
+  </div>
+</header>
+
+<details class="explain" open>
+  <summary>Agent 到底是什么？在哪里能用？<span class="tip">点这里收起 / 展开</span></summary>
+  <div class="exbody">
+    <div class="flow">
+      <span class="n">任务单</span><span class="ar">→</span>
+      <span class="n">读契约表</span><span class="ar">→</span>
+      <span class="n">从目标反推步骤</span><span class="ar">→</span>
+      <span class="n">执行一步</span><span class="ar">→</span>
+      <span class="n">独立校验器重算</span><span class="ar">→</span>
+      <span class="n">记一笔，回到目标</span>
+      <span class="cap">这个圈一直转到目标达成、或明确转不下去</span>
+    </div>
+    <div class="three">
+      <div class="tcard">
+        <h4>它不是聊天框，是一个循环</h4>
+        <p>「分析任务、挑工具」是<b>描述</b>，不是形态。真正的实体是：一张契约表（哪些事实、谁产出、依赖谁）＋ 一份世界状态（现在哪些事实已成立）＋ 上面那个循环。循环不依赖大模型，是确定的代码。</p>
+      </div>
+      <div class="tcard">
+        <h4>最关键的一条：不信自称</h4>
+        <p>工具跑完会说「我做好了」，内核<b>不采信</b>。每个事实绑一个独立校验器，从磁盘重新算一遍；算不过就拦下。所以「跑通了」不等于「做对了」。</p>
+      </div>
+      <div class="tcard">
+        <h4>壳可以换，里面不变</h4>
+        <p>同一套内核可以是命令行、这个桌面软件、网页，或嵌进别的程序。软件只是给人看的一面；换壳不用改内核。<b>你之前找不到它，是因为它此前只有命令行这一面。</b></p>
+      </div>
+    </div>
+    <dl class="kv">
+      <dt>这个软件</dt><dd>双击打开，不需要装任何东西。默认回放内核真跑过的轨迹；连上本地桥后可以实时呼叫真内核。</dd>
+      <dt>真内核在哪</dt><dd class="mono" id="kernelPath">—</dd>
+      <dt>命令行怎么用</dt><dd class="mono">python -m agentcore run demo --input src=fixtures/sample_small.txt --goal book --budget-steps 40</dd>
+      <dt>现在能做什么</dt><dd id="capabilityNote">—</dd>
+    </dl>
+    <div class="note" id="honestNote"></div>
+  </div>
+</details>
+
+<div class="controls">
+  <button class="btn primary" id="btnPlay">播放</button>
+  <button class="btn" id="btnStep">单步</button>
+  <button class="btn" id="btnReset">重置</button>
+  <div class="prog"><i id="progBar"></i></div>
+  <span class="stepno" id="stepNo">0 / 0</span>
+  <span class="spd">速度
+    <select id="speed">
+      <option value="900">慢</option>
+      <option value="450" selected>中</option>
+      <option value="160">快</option>
+      <option value="40">极快</option>
+    </select>
+  </span>
+</div>
+
+<div class="grid">
+  <!-- 左：场景 -->
+  <div class="panel col1">
+    <div class="ph">选一个场景 <span class="sub" id="sceneCount"></span></div>
+    <div class="scenes" id="scenes"></div>
+  </div>
+
+  <!-- 中：状态网 + 当前动作 -->
+  <div class="col2">
+    <div class="panel">
+      <div class="ph">世界状态：哪些事实已经成立 <span class="sub" id="factSub"></span></div>
+      <div class="pb">
+        <div class="facts" id="facts"></div>
+        <div class="hintline">灰点＝尚未成立；绿点＝已被独立校验器确认。带「·件」的是按实例事实，要对每一件分别成立。</div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <div class="ph">当前这一步 <span class="sub" id="actSub"></span></div>
+      <div class="pb" id="actBody"></div>
+    </div>
+    <div class="panel" style="margin-top:14px;display:none" id="routePanel">
+      <div class="ph">两条入口：任务单改一个字段，路径自己换 <span class="sub">实时调用 agentcore.loop.preview 得出</span></div>
+      <div class="pb">
+        <div class="rtabs" id="rtabs"></div>
+        <div class="chain" id="chain"></div>
+        <div id="rtwhy"></div>
+        <div class="hintline">同一步「零件已分出」有两个产出者：没给割线走语义分件，给了割线走按线切割（priority 20 高于 10，尊重人画的线）。规划器先定路线，再沿路线往回找第一个能执行的动作。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右：日志 + 结论 -->
+  <div class="col3">
+    <div class="panel">
+      <div class="ph">决策日志 <span class="sub">为什么选它 / 谁复核</span></div>
+      <div class="log" id="log"></div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <div class="ph">结论</div>
+      <div class="pb" id="verdictBox"></div>
+    </div>
+  </div>
+</div>
+
+<div class="bridge">
+  <div class="ph">连真内核（可选） <span class="sub">不连也能用，回放的是内核真跑过的轨迹</span></div>
+  <div class="pb">
+    <span class="st off" id="bridgeState">状态：<b>未连接</b></span>
+    <button class="btn" id="btnProbe">检测本地服务</button>
+    <button class="btn" id="btnLive" disabled>实时规划一次</button>
+    <div class="cmd">双击桌面上的 <span class="c">启动真内核.bat</span>，或在产物目录运行 <span class="c">python bridge.py</span></div>
+    <div class="hintline" style="width:100%">
+      连上后「实时规划一次」会真的调用本机 Python 内核的规划器，把结果画进上面那条链。服务只监听 127.0.0.1，不联网、不上传任何东西。
+    </div>
+    <div class="live" id="liveBox"></div>
+  </div>
+</div>
+
+<footer id="footer"></footer>
+</div>
+
+<script type="application/json" id="traces">__TRACES_JSON__</script>
+<script>
+(function(){
+"use strict";
+var SELFTEST = /[?&]selftest=1/.test(location.search);
+var JS_ERRORS = [];
+if(SELFTEST){ window.addEventListener("error",function(e){ JS_ERRORS.push(String(e.message)); }); }
+var DATA = JSON.parse(document.getElementById("traces").textContent);
+var SCENES = DATA.scenes, META = DATA.meta;
+var $ = function(id){ return document.getElementById(id); };
+var esc = function(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); };
+
+var cur = null, idx = 0, timer = null, routeIdx = 0;
+
+/* ---------- 顶部说明 ---------- */
+$("kernelPath").textContent = META.kernel;
+$("kernelBadge").textContent = "内核 " + META.pack_version + " · 验收 " + META.accept;
+$("stubBadge").textContent = META.all_stub
+  ? META.n_tools + " 个工具实现仍是桩"
+  : META.n_tools + " 个工具中 " + (META.n_stub || 0) + " 个仍是桩";
+$("capabilityNote").innerHTML = "调度、判定、拒收、留痕都齐了；"
+  + (META.all_stub
+      ? "<b>分件能力本身还是空的</b>（" + META.n_tools + " 个工具实现、" + META.n_verifiers + " 个校验器都是桩）。所以分件包真跑会如实报 NOT_IMPLEMENTED，不会假装切出零件。"
+      : "已有部分工具实现落地，逐项状态以 <span class='mono'>doctor</span> 输出为准。");
+$("honestNote").innerHTML = "<b>诚实边界：</b>这个界面里每一步的「为什么选它」「校验器说了什么」，都取自 <span class='mono'>runs_accept/*/events.jsonl</span> —— 是内核真跑过的记录，不是演示动画。"
+  + (META.all_stub
+      ? "但当前 <span class='mono'>split3d</span> 的 " + META.n_tools + " 个工具实现和 " + META.n_verifiers + " 个校验器<b>全部是桩</b>，所以分件包真跑的结局是 UNDECIDABLE / NOT_IMPLEMENTED（见「能力是桩」场景）。<b>能跑通的是调度骨架，不是分件能力。</b>"
+      : "当前 <span class='mono'>split3d</span> 已有部分实现就绪，逐项状态以 <span class='mono'>doctor</span> 为准。");
+$("footer").innerHTML = "数据构建于 " + esc(META.built_at) + " · 来源：" + esc(META.kernel)
+  + " · 单文件、零依赖、离线可用 · 之后加功能不用改内核，只改这个壳";
+
+/* ---------- 场景列表 ---------- */
+function renderScenes(){
+  $("sceneCount").textContent = SCENES.length + " 个";
+  $("scenes").innerHTML = SCENES.map(function(s,i){
+    return '<button class="sc'+(i===0?" on":"")+'" data-i="'+i+'">'
+      + '<span class="t"><span class="tag">'+esc(s.badge)+'</span>'+esc(s.title)+'</span>'
+      + '<span class="m">'+(s.kind==="plan"?"规划预览":esc(s.pack)+" · "+s.steps.length+" 步 · "+esc(s.verdict||"—"))+'</span>'
+      + '</button>';
+  }).join("");
+  Array.prototype.forEach.call($("scenes").querySelectorAll(".sc"),function(b){
+    b.onclick=function(){ load(+b.dataset.i); };
+  });
+}
+
+/* ---------- 事实网 ---------- */
+function renderFacts(on, domNow){
+  var defs = (cur.defs||[]).slice();
+  // 回放里出现过但契约表没有的事实（例如注入的临时包），补进来。
+  // id 已经归一化过（去掉 @instance），不会把 36 个实例展开成 36 个格子。
+  (cur.facts_final||[]).forEach(function(f){
+    var base = String(f).split("@")[0];
+    if(!defs.some(function(d){return d.id===base;}))
+      defs.push({id:base,label:(cur.facts_cn||{})[base]||base,group:"",domain:false});
+  });
+  $("factSub").textContent = (cur.pack||"") + " · " + defs.length + " 个事实";
+  $("facts").innerHTML = defs.map(function(d){
+    var hit = on && on.indexOf(d.id)>=0;
+    var justHit = hit && cur._just === d.id;
+    var meta = (cur.domain_meta||{})[d.id];
+    var cnt = "", part = false;
+    if(meta && meta.total){
+      var got = domNow && domNow[d.id] ? domNow[d.id].length : 0;
+      var gone = (meta.abandoned||[]).length;
+      part = got>0 && (got+gone)<meta.total;
+      var cls = (gone>0 ? " bad" : "");
+      cnt = '<div class="cnt'+cls+'">'+got+" / "+meta.total+" 件"
+          + (gone>0 ? " · 弃 "+gone : "")+'</div>';
+    }
+    return '<div class="f'+(hit?" on":"")+(part?" part":"")+(d.domain?" dom":"")+(justHit?" hit":"")+'">'
+      + '<div class="n"><span class="dot"></span>'+esc(d.label)+'</div>'
+      + '<div class="i mono">'+esc(d.id)+'</div>'+cnt+'</div>';
+  }).join("");
+}
+
+/* ---------- 当前动作 ---------- */
+function renderAct(){
+  var box = $("actBody"), s = cur.steps[idx];
+  if(!s){
+    var msg = "本场景的全部动作已走完，看右边的结论。";
+    if(cur.kind==="plan") msg = "这是规划预览，不是一次运行。点上面的「没给割线 / 给了割线」切换，看路径怎么变。";
+    else if(cur.steps.length===0) msg = "这个场景一步都没跑。<b>缺输入时，静态推演在 0 步就判出走不通</b>，不会白跑一遍再失败——看右边的诊断结论。";
+    else if(idx===0) msg = "还没开始。点「播放」或「单步」，看内核怎么一步步把事实点亮。";
+    box.innerHTML = '<div class="empty">'+msg+'</div>';
+    $("actSub").textContent = cur.steps.length ? "" : "0 步";
+    return;
+  }
+  $("actSub").textContent = "第 "+(idx+1)+" / "+cur.steps.length+" 步";
+  var v = s.verify || null, ok = v && v.ok;
+  var detail = "";
+  if(v && v.detail && Object.keys(v.detail).length){
+    try{ detail = '<span class="mono" style="opacity:.75"> · '+esc(JSON.stringify(v.detail))+'</span>'; }catch(e){}
+  }
+  var rows = [
+    ["要产出", "<strong>"+esc(s.fact_cn||s.fact)+"</strong> <span class='mono' style='color:var(--ink3)'>"+esc(s.fact)+"</span>"],
+    ["为什么选它", esc(s.why||"—")],
+    ["这一步结果", esc(s.outcome||s.result||"—") + (s.instance?" <span class='mono' style='color:var(--accent)'>实例 "+esc(s.instance)+"</span>":"")],
+    ["耗时", '<span class="mono">'+esc(s.duration_s!=null?s.duration_s+" s":"—")+'</span>']
+  ];
+  if(s.reason_code) rows.push(["原因码", '<span class="mono" style="color:var(--bad)">'+esc(s.reason_code)+'</span>']);
+  box.innerHTML = '<div class="act"><div class="top">'
+    + '<span class="no">'+esc(s.step||(idx+1))+'</span>'
+    + '<span class="tt">'+esc(s.title||s.tool)+'</span>'
+    + '<span class="tool mono">'+esc(s.tool)+'</span>'
+    + '<span class="res '+esc(s.result||"")+'">'+esc(s.result||"—")+'</span></div>'
+    + '<div class="rows">'
+    + rows.map(function(r){ return '<div class="row"><div class="k">'+r[0]+'</div><div class="v">'+r[1]+'</div></div>'; }).join("")
+    + (v ? '<div class="verify '+(ok?"ok":"no")+'"><b>独立校验器重算：'+(ok?"通过":"拦下")+'</b> — '
+          + esc(v.why||"无说明") + detail + '</div>'
+         : '<div class="verify no"><b>这一步没有校验结果</b> — 工具失败或被准入拦下，事实不会入账。</div>')
+    + '</div></div>';
+}
+
+/* ---------- 日志 ---------- */
+function renderLog(){
+  var out = [];
+  for(var i=0;i<idx;i++){
+    var s = cur.steps[i], v = s.verify||null, bad = (s.result!=="OK");
+    out.push('<div class="lg '+(bad?"bad":"ok")+'">'
+      + '<div class="h">'+esc(s.step||(i+1))+'. '+esc(s.title||s.tool)
+      + '<span class="mono">'+esc(s.tool)+(s.instance?"@"+esc(s.instance):"")+'</span></div>'
+      + '<div class="d">'+esc(s.why||"—")+'</div>'
+      + (v ? '<div class="v'+(v.ok?"":" no")+'">'+(v.ok?"✓ ":"✗ ")+esc(v.why||"校验通过")+'</div>' : '')
+      + '</div>');
+  }
+  if(!out.length) out.push('<div class="empty">还没有决策记录。</div>');
+  if(idx>=cur.steps.length && cur.steps.length){
+    (cur.reasons||[]).forEach(function(r){
+      out.push('<div class="lg bad"><div class="h">结局理由</div><div class="d">'+esc(r)+'</div></div>');
+    });
+  }
+  $("log").innerHTML = out.join("");
+  $("log").scrollTop = $("log").scrollHeight;
+}
+
+/* ---------- 结论 ---------- */
+var VERDICT_CN = {
+  SUCCESS:"成功", FAILED:"失败", REJECTED:"拒收", UNDECIDABLE:"无法判定",
+  SUCCESS_WITH_WARNINGS:"成功（带告警）"
+};
+function renderVerdict(){
+  if(cur.kind==="plan"){
+    $("verdictBox").innerHTML='<div class="empty">规划预览不产生结局。<br>它只回答「按这份任务单，会走哪条路」。</div>';
+    return;
+  }
+  var finished = idx>=cur.steps.length;
+  if(!finished){ $("verdictBox").innerHTML='<div class="empty">跑完才给结论。<br>内核不会因为「跑了很多步」就说成功。</div>'; return; }
+  var cls = cur.verdict||"UNDECIDABLE", cn = VERDICT_CN[cls]||cls;
+  var why = (cur.reasons||[]).slice(0,2).join("；");
+  if(!why) why = cur.code ? "原因码："+cur.code : "全部目标事实已被独立校验器确认，没有缺口。";
+  if(cur.steps.length===0 && cur.reasons && cur.reasons.length){
+    why = "一步都没跑，静态推演就判出走不通。<br>" + esc(why);
+  }
+  $("verdictBox").innerHTML = '<div class="verdict '+esc(cls)+'">'
+    + '<div class="big">'+esc(cn)+'</div>'
+    + '<div class="code mono">'+esc(cls)+(cur.code?" / "+esc(cur.code):"")+'</div>'
+    + '<div class="why">'+why+'</div></div>';
+}
+
+/* ---------- 路线场景 ---------- */
+function renderRoutes(){
+  var r = cur.routes[routeIdx];
+  $("rtabs").innerHTML = cur.routes.map(function(x,i){
+    return '<button class="rtab'+(i===routeIdx?" on":"")+'" data-i="'+i+'">'+esc(x.label)+'</button>';
+  }).join("");
+  Array.prototype.forEach.call($("rtabs").querySelectorAll(".rtab"),function(b){
+    b.onclick=function(){ routeIdx=+b.dataset.i; renderRoutes(); };
+  });
+  $("chain").innerHTML = r.tools.map(function(t,i){
+    return (i?'<span class="arw">→</span>':'')+'<span class="node'+(i===r.tools.length-1?" hi":"")+'">'+esc(t)+'</span>';
+  }).join("");
+  $("rtwhy").innerHTML = r.tools.map(function(t,i){
+    return '<div class="rtwhy"><b>'+esc(t)+'</b> — '+esc(r.why[i]||"")+'</div>';
+  }).join("");
+}
+
+/* ---------- 驱动 ---------- */
+function paint(){
+  var on = cur.facts_after && cur.facts_after[idx-1] ? cur.facts_after[idx-1] : [];
+  var domNow = cur.dom_progress && cur.dom_progress[idx-1] ? cur.dom_progress[idx-1] : {};
+  cur._just = idx>0 && cur.steps[idx-1] ? cur.steps[idx-1].fact : null;
+  renderFacts(on, domNow);
+  renderAct(); renderLog(); renderVerdict();
+  $("progBar").style.width = (cur.steps.length? idx/cur.steps.length*100:0)+"%";
+  $("stepNo").textContent = idx+" / "+cur.steps.length;
+  $("btnPlay").textContent = timer ? "暂停" : (idx>=cur.steps.length ? "重播" : "播放");
+  $("btnStep").disabled = idx>=cur.steps.length;
+}
+function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+function step(){
+  if(idx>=cur.steps.length){ stop(); return; }
+  idx++; paint();
+  if(idx>=cur.steps.length) stop();
+}
+function play(){
+  if(timer){ stop(); paint(); return; }
+  if(idx>=cur.steps.length) idx=0;
+  timer=setInterval(step, +$("speed").value);
+  paint();
+}
+function load(i){
+  stop(); cur=SCENES[i]; idx=0; routeIdx=0;
+  Array.prototype.forEach.call($("scenes").querySelectorAll(".sc"),function(b,j){
+    b.className="sc"+(j===i?" on":"");
+  });
+  $("routePanel").style.display = cur.kind==="plan" ? "block" : "none";
+  $("modeBadge").textContent = cur.kind==="plan" ? "实时规划结果（已固化）" : "真实轨迹回放";
+  $("modeBadge").className = "badge " + (cur.kind==="plan"?"b-warn":"b-on");
+  if(cur.kind==="plan") renderRoutes();
+  paint();
+}
+
+$("btnPlay").onclick=play;
+$("btnStep").onclick=function(){ stop(); step(); };
+$("btnReset").onclick=function(){ stop(); idx=0; paint(); };
+$("speed").onchange=function(){ if(timer){ stop(); play(); } };
+
+/* ---------- 可选：连真内核 ---------- */
+var BASE = "http://127.0.0.1:8765";
+function setBridge(on,msg){
+  $("bridgeBadge").textContent = on?"已连接真内核":"未连接真内核";
+  $("bridgeBadge").className = "badge "+(on?"b-on":"b-off");
+  $("bridgeState").className = "st"+(on?"":" off");
+  $("bridgeState").innerHTML = "状态：<b>"+(on?"已连接":"未连接")+"</b>" + (msg?" · "+esc(msg):"");
+  $("btnLive").disabled = !on;
+}
+$("btnProbe").onclick=function(){
+  setBridge(false,"检测中…");
+  fetch(BASE+"/api/health",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    setBridge(true, d.kernel_version||"");
+  }).catch(function(){ setBridge(false,"没检测到服务，继续用回放模式即可"); });
+};
+$("btnLive").onclick=function(){
+  $("liveBox").className="live show";
+  $("liveBox").textContent="正在调用本机内核…";
+  fetch(BASE+"/api/plan?goal=parts_available",{cache:"no-store"}).then(function(r){return r.json();}).then(function(d){
+    if(d.error){ $("liveBox").textContent="内核返回："+d.error; return; }
+    var tools=(d.steps||[]).filter(function(s){return s.kind==="action";}).map(function(s){return s.tool;});
+    var why=(d.steps||[]).filter(function(s){return s.kind==="action";}).map(function(s){return s.why||"";});
+    $("liveBox").innerHTML="<b>真内核实时规划（无割线）：</b><div class='chain' style='margin-top:8px'>"
+      + tools.map(function(t,i){return (i?'<span class="arw">→</span>':'')+'<span class="node">'+esc(t)+'</span>';}).join("")
+      + "</div><div style='font-size:11.8px;opacity:.85'>共 "+tools.length+" 步 · 来源 /api/plan（本次实时调用，不是回放）</div>";
+    // 同步把「路线」场景的第一条链替换成本次真结果，方便对照
+    var rs=SCENES.filter(function(s){return s.kind==="plan";})[0];
+    if(rs && tools.length){ rs.routes[0].tools=tools; rs.routes[0].why=why; rs.routes[0].label="没给割线（刚实时算的）"; }
+  }).catch(function(e){ $("liveBox").textContent="调用失败："+e+"（回放模式仍可用）"; });
+};
+
+renderScenes();
+load(0);
+
+/* ---------- 只在 ?probe=1 时跑：从 file:// 页面真探测本地桥（验 CORS） ---------- */
+if(/[?&]probe=1/.test(location.search)){
+  $("btnProbe").click();
+  setTimeout(function(){
+    $("btnLive").click();
+    setTimeout(function(){
+      var pre = document.createElement("pre");
+      pre.id = "probeOut";
+      pre.style.display = "none";
+      pre.textContent = "PROBE_JSON:" + JSON.stringify({
+        bridge: $("bridgeState").textContent,
+        badge: $("bridgeBadge").textContent,
+        liveShown: $("liveBox").className.indexOf("show") >= 0,
+        live: $("liveBox").textContent.slice(0, 260),
+        jsErrors: JS_ERRORS
+      });
+      document.body.appendChild(pre);
+      document.body.setAttribute("data-probe", "done");
+    }, 1500);
+  }, 1500);
+}
+
+/* ---------- 只在 ?selftest=1 时跑：把所有场景走到底，报告渲染结果 ---------- */
+if(SELFTEST){
+  var report = {scenes:[], errors:JS_ERRORS, fatal:null};
+  try{
+    for(var i=0;i<SCENES.length;i++){
+      load(i);
+      var s = SCENES[i];
+      // 0 步场景直接看结论；其余单步走到底
+      if(s.kind==="plan"){
+        routeIdx=0; renderRoutes(); routeIdx=1; renderRoutes();
+      }else{
+        var guard=0;
+        while(idx<s.steps.length && guard++<200){ idx++; }
+      }
+      paint();
+      var factsOn = $("facts").querySelectorAll(".f.on").length;
+      var actLen = $("actBody").textContent.trim().length;
+      var logLen = $("log").textContent.trim().length;
+      var vdText = $("verdictBox").textContent.trim();
+      var chainLen = (s.kind==="plan") ? $("chain").querySelectorAll(".node").length : -1;
+      report.scenes.push({id:s.id, kind:s.kind, steps:s.steps.length,
+        code:s.code||"", verdict:s.verdict||"",
+        sceneButtons:$("scenes").querySelectorAll(".sc").length,
+        selected:$("scenes").querySelectorAll(".sc.on").length,
+        factNodes:$("facts").querySelectorAll(".f").length,
+        factsOn:factsOn, actChars:actLen, logChars:logLen,
+        verdictChars:vdText.length, verdictText:vdText.slice(0,70),
+        chainNodes:chainLen, stepNo:$("stepNo").textContent});
+    }
+    // 回到第一个场景，确认重播可用
+    load(0); stop();
+    report.afterReload = $("scenes").querySelectorAll(".sc.on").length;
+  }catch(e){ report.fatal = String(e && e.stack || e); }
+  var pre = document.createElement("pre");
+  pre.id = "selftestOut";
+  pre.style.display="none";
+  pre.textContent = "SELFTEST_JSON:"+JSON.stringify(report);
+  document.body.appendChild(pre);
+  document.body.setAttribute("data-selftest", "done");
+}
+})();
+</script>
+</body>
+</html>
